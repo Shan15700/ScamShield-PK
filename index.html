@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScamShield PK - Pakistan's Anti-Scam Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Custom CSS link -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+
+    <nav
+        class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-shield-halved text-emerald-400 text-2xl"></i>
+            <span class="font-bold text-xl tracking-wider text-emerald-400">ScamShield <span
+                    class="text-white">PK</span></span>
+        </div>
+        <a href="admin.html" class="text-sm bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition"><i
+                class="fa-solid fa-lock mr-2"></i>Admin Portal</a>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-6 py-12 text-center">
+        <h1
+            class="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+            Protect Yourself and Your Family From Scammers!
+        </h1>
+        <p class="text-slate-400 text-lg mb-8">
+            Instantly check any suspicious Call, SMS text message, or Link (URL) below.
+        </p>
+
+        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 shadow-xl backdrop-blur">
+            <div class="flex justify-center border-b border-slate-700 mb-6 gap-4">
+                <button onclick="switchTab('link')" id="tab-link"
+                    class="pb-3 px-4 font-semibold text-emerald-400 border-b-2 border-emerald-400 flex items-center gap-2 cursor-pointer transition">
+                    <i class="fa-solid fa-link"></i> Link Checker
+                </button>
+                <button onclick="switchTab('sms')" id="tab-sms"
+                    class="pb-3 px-4 font-semibold text-slate-400 hover:text-white flex items-center gap-2 cursor-pointer transition">
+                    <i class="fa-solid fa-comment-sms"></i> SMS / Message
+                </button>
+                <button onclick="switchTab('call')" id="tab-call"
+                    class="pb-3 px-4 font-semibold text-slate-400 hover:text-white flex items-center gap-2 cursor-pointer transition">
+                    <i class="fa-solid fa-phone"></i> Call / Number
+                </button>
+            </div>
+
+            <div class="relative mb-6">
+                <input type="text" id="main-input" placeholder="Paste the suspicious Link (URL) here..."
+                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-4 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition pr-12 text-lg shadow-inner">
+                <button onclick="analyzeInput()"
+                    class="absolute right-3 top-3 bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold px-5 py-1.5 rounded-lg transition cursor-pointer">
+                    Check
+                </button>
+            </div>
+
+            <div id="result-box"
+                class="hidden rounded-xl p-5 text-left flex items-start gap-4 border border-slate-700 bg-slate-800/40 animate-fade-in transition-all duration-300 mb-6">
+                <div id="result-icon" class="text-3xl"></div>
+                <div>
+                    <h3 id="result-title" class="font-bold text-xl mb-1"></h3>
+                    <p id="result-desc" class="text-slate-300 text-sm"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button onclick="userReportScam()"
+                    class="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 text-sm font-semibold px-4 py-2 rounded-xl transition cursor-pointer flex items-center gap-2">
+                    <i class="fa-solid fa-flag"></i> I know this is a scam, Report it!
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

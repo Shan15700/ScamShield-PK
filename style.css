@@ -1,0 +1,90 @@
+/* 🧵 Custom Fonts aur Smooth Scroll */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+body {
+    font-family: 'Plus+ Jakarta Sans', sans-serif;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    /* Mobile screen se content baahir na jaye */
+}
+
+/* ✨ Beautiful Fade-in Animation for Results */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* 🟢 Custom Neon Glow Effect for Headers */
+.neon-text-glow {
+    text-shadow: 0 0 10px rgba(52, 211, 153, 0.3);
+}
+
+/* 📱 Mobile Friendly Touch Enhancements & Responsiveness */
+button,
+input,
+textarea {
+    -webkit-tap-highlight-color: transparent;
+    /* Mobile par tap karne se jo ajeeb blue box banta hai use khatam karta hai */
+    touch-action: manipulation;
+    /* Mobile browsers me double-tap zoom delay ko khatam karke click fast karta hai */
+}
+
+/* Mobile responsive font sizing and auto wrapping for long URLs/Text */
+input,
+textarea,
+p,
+span,
+li {
+    word-break: break-word;
+    /* Agar user koi bohot lamba link ya text dale toh woh mobile screen se bahar na nikal jaye, balki auto wrap ho jaye */
+    overflow-wrap: break-word;
+}
+
+/* 🖥️ Custom Scrollbar for Desktop & Tablets */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    /* Horizontal scrollbar size for tablets */
+}
+
+::-webkit-scrollbar-track {
+    background: #0f172a;
+    /* Slate 900 */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    /* Slate 700 */
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+    /* Slate 600 */
+}
+
+/* 📲 Mobile View Adjustments (For screens smaller than 640px) */
+@media (max-width: 640px) {
+
+    /* Admin panels me jo scrollable lists hain unko mobile screen ke mutabiq adjust karne ke liye */
+    ul {
+        padding-right: 0px !important;
+    }
+
+    /* Input field me text selection mobile touch par aasan karne ke liye padding adjust ki hai */
+    input {
+        font-size: 16px !important;
+        /* Mobile safari/chrome par automatic zoom-in zoom-out problem ko rokta hai input select hone par */
+    }
+}
