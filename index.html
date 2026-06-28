@@ -88,6 +88,44 @@
         </div>
     </main>
 
+    <!-- ⭐ Rating & Feedback Section -->
+    <div class="bg-dark rounded-4 p-4 mb-4 border border-secondary text-light">
+        <h3 class="text-warning mb-3 h5 text-uppercase fw-bold">
+            <i class="bi bi-star-fill me-2"></i> App Feedback & Ratings
+        </h3>
+        <p class="text-muted small">Kya is tool ne aapko scam se bachaya? Apna experience share karein aur doosron ko
+            mehfooz rakhein!</p>
+
+        <form id="feedbackForm" class="mb-4">
+            <!-- Star Rating Picker -->
+            <div class="mb-3">
+                <label class="form-label text-muted small d-block">Aapki Rating:</label>
+                <div id="starRatingPicker" class="fs-3 d-inline-flex gap-2 text-secondary">
+                    <i class="bi bi-star-fill rating-star" data-value="1" style="cursor: pointer;"></i>
+                    <i class="bi bi-star-fill rating-star" data-value="2" style="cursor: pointer;"></i>
+                    <i class="bi bi-star-fill rating-star" data-value="3" style="cursor: pointer;"></i>
+                    <i class="bi bi-star-fill rating-star" data-value="4" style="cursor: pointer;"></i>
+                    <i class="bi bi-star-fill rating-star" data-value="5" style="cursor: pointer;"></i>
+                </div>
+            </div>
+
+            <!-- Name & Comment Input -->
+            <div class="mb-3">
+                <input type="text" id="feedbackName" class="form-control bg-secondary text-light border-0 mb-2"
+                    placeholder="Aapka Naam" required>
+                <textarea id="feedbackText" class="form-control bg-secondary text-light border-0" rows="2"
+                    placeholder="Apna feedback likhein... (e.g., Mujhe fake BISP link se bachaya!)" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-warning w-100 fw-bold">Submit Review</button>
+        </form>
+
+        <!-- Recent Reviews List -->
+        <h4 class="h6 text-uppercase fw-bold text-muted border-top pt-3 mb-3">Recent Community Reviews</h4>
+        <div id="reviewsContainer" class="d-flex flex-column gap-2" style="max-height: 250px; overflow-y: auto;">
+            <!-- Reviews automatically yahan add honge -->
+        </div>
+    </div>
+
     <footer
         class="border-t border-slate-800 bg-slate-950/50 py-6 text-center text-xs md:text-sm text-slate-500 w-full shrink-0">
         <div class="max-w-4xl mx-auto px-4 md:px-6 flex flex-col sm:flex-row justify-between items-center gap-3">

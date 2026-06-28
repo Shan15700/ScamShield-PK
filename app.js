@@ -205,3 +205,80 @@ function userReportScam() {
     document.getElementById('main-input').value = '';
     document.getElementById('result-box').classList.add('hidden');
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const stars = document.querySelectorAll("#starRatingPicker .rating-star");
+    const feedbackForm = document.getElementById("feedbackForm");
+    const reviewsContainer = document.getElementById("reviewsContainer");
+    let selectedRating = 5; // Default rating
+
+    // 1. Star Selection Logic
+    stars.forEach((star, index) => {
+        star.addEventListener("click", () => {
+            selectedRating = index + 1;
+            stars.forEach((s, idx) => {
+                if (idx <= index) {
+                    s.classList.remove("text-secondary");
+                    s.classList.add("text-warning"); // Golden star
+                } else {
+                    s.classList.remove("text-warning");
+                    s.classList.add("text-secondary"); // Gray star
+                }
+            });
+        });
+    });
+
+    // 2. Load Reviews from LocalStorage
+    const loadReviews = () => {
+        reviewsContainer.innerHTML = "";
+        const reviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
+            { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
+            { name: "Sana Khan", rating: 4, text: "Bohot useful hai, maine apne abu ke phone mein save karwa diya hai." }
+        ];
+
+        reviews.forEach(rev => {
+            const starHTML = `<span class="text-warning">${"★".repeat(rev.rating)}${"☆".repeat(5 - rev.rating)}</span>`;
+            const reviewDiv = document.createElement("div");
+            reviewDiv.className = "bg-secondary p-2 rounded-3 small border border-dark mb-1";
+            reviewDiv.innerHTML = `
+                <div class="d-flex justify-content-between fw-bold text-warning">
+                    <span>${rev.name}</span> ${starHTML}
+                </div>
+                <p class="text-light m-0 mt-1" style="font-size: 13px;">${rev.text}</p>
+            `;
+            reviewsContainer.insertBefore(reviewDiv, reviewsContainer.firstChild);
+        });
+    };
+
+    // 3. Form Submit Handle
+    feedbackForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById("feedbackName");
+        const textInput = document.getElementById("feedbackText");
+
+        const newReview = {
+            name: nameInput.value,
+            rating: selectedRating,
+            text: textInput.value
+        };
+
+        const currentReviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
+            { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
+            { name: "Sana Khan", rating: 4, text: "Bohot useful hai, maine apne abu ke phone mein save karwa diya hai." }
+        ];
+
+        currentReviews.push(newReview);
+        localStorage.setItem("scamShieldReviews", JSON.stringify(currentReviews));
+
+        // Reset Form
+        nameInput.value = "";
+        textInput.value = "";
+
+        // Reload list
+        loadReviews();
+        alert("Thank you! Aapka feedback submit ho gaya hai.");
+    });
+
+    // Initialize Reviews on Load
+    loadReviews();
+});
