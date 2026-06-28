@@ -85,7 +85,7 @@ async function analyzeInput() {
         if (isShortLink) {
             resultBox.classList.remove('hidden');
             resultBox.className = "rounded-xl p-4 text-left flex items-start gap-3 border border-cyan-500 bg-cyan-950/30 text-cyan-200 animate-fade-in mb-5";
-            rIcon.innerHTML = "<div class='text-lg text-cyan-400 mt-0.5'><i class='fa-solid fa-spinner animate-spin'></i></div>";
+            rIcon.innerHTML = '<div class="text-lg text-cyan-400 mt-0.5"><i class="fa-solid fa-spinner animate-spin"></i></div>';
             rTitle.innerText = "Advanced URL Expander...";
             rDesc.innerText = "Analyzing the destination behind this shortened link...";
 
