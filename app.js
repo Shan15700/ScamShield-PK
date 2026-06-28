@@ -287,65 +287,63 @@ document.addEventListener("DOMContentLoaded", () => {
     const stars = document.querySelectorAll("#starRatingPicker .rating-star");
     const feedbackForm = document.getElementById("feedbackForm");
     const reviewsContainer = document.getElementById("reviewsContainer");
-    let selectedRating = 5; // Default rating sets to 5 stars
+    let selectedRating = 5;
 
-    // 1. Star Picker Click Handler (FontAwesome Class Swap)
+    // 1. Mobile-friendly Star Selector Toggle
     stars.forEach((star, index) => {
         star.addEventListener("click", () => {
             selectedRating = index + 1;
             stars.forEach((s, idx) => {
                 if (idx <= index) {
-                    s.className = "fa-solid fa-star rating-star cursor-pointer text-amber-400 transition transform hover:scale-110";
+                    s.className = "fa-solid fa-star rating-star cursor-pointer text-amber-400 transition";
                 } else {
-                    s.className = "fa-regular fa-star rating-star cursor-pointer text-slate-600 transition transform hover:scale-110";
+                    s.className = "fa-regular fa-star rating-star cursor-pointer text-slate-600 transition";
                 }
             });
         });
     });
 
-    // 2. Load and Sync Reviews from LocalStorage
+    // 2. Render Loop with Balanced Sizing
     const loadMainReviews = () => {
         if (!reviewsContainer) return;
         reviewsContainer.innerHTML = "";
 
-        // Same database matching admin view
         const reviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
             { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
             { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
         ];
 
         if (reviews.length === 0) {
-            reviewsContainer.innerHTML = `<p class="text-center text-slate-500 text-xs py-4">Koi feedback nahi mila. Pehle review aap dein!</p>`;
+            reviewsContainer.innerHTML = `<p class="text-center text-slate-500 text-[11px] py-2">Koi feedback nahi mila.</p>`;
             return;
         }
 
-        // Display rows (Newest on top)
         reviews.forEach(rev => {
             let starsHTML = "";
             for (let i = 1; i <= 5; i++) {
                 if (i <= rev.rating) {
-                    starsHTML += `<i class="fa-solid fa-star text-amber-400 mr-0.5 text-xs"></i>`;
+                    starsHTML += `<i class="fa-solid fa-star text-amber-400 mr-0.5 text-[10px]"></i>`;
                 } else {
-                    starsHTML += `<i class="fa-regular fa-star text-slate-600 mr-0.5 text-xs"></i>`;
+                    starsHTML += `<i class="fa-regular fa-star text-slate-600 mr-0.5 text-[10px]"></i>`;
                 }
             }
 
             const reviewDiv = document.createElement("div");
-            reviewDiv.className = "bg-slate-900/40 border border-slate-800 p-3.5 rounded-xl transition hover:border-slate-700";
+            // Transparent background blends inside any system root color
+            reviewDiv.className = "bg-black/20 border border-white/5 p-2.5 rounded-xl flex flex-col gap-0.5";
             reviewDiv.innerHTML = `
-                <div class="flex justify-between items-center mb-1.5">
-                    <span class="font-bold text-slate-200 text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-circle-user text-slate-500 text-base"></i> ${rev.name}
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-slate-300 text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-user text-slate-500 text-xs"></i> ${rev.name}
                     </span>
-                    <div class="bg-slate-950/80 px-2 py-0.5 rounded border border-slate-800/80">${starsHTML}</div>
+                    <div class="bg-black/30 px-1.5 py-0.5 rounded border border-white/5">${starsHTML}</div>
                 </div>
-                <p class="text-slate-400 text-xs leading-relaxed m-0">${rev.text}</p>
+                <p class="text-slate-400 text-[11px] md:text-xs leading-normal m-0 pl-5">${rev.text}</p>
             `;
             reviewsContainer.insertBefore(reviewDiv, reviewsContainer.firstChild);
         });
     };
 
-    // 3. Handle Form Submission
     if (feedbackForm) {
         feedbackForm.addEventListener("submit", (e) => {
             e.preventDefault();
@@ -358,19 +356,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 text: textInput.value.trim()
             };
 
-            const currentReviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
-                { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
-                { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
-            ];
-
+            const currentReviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [];
             currentReviews.push(newReview);
             localStorage.setItem("scamShieldReviews", JSON.stringify(currentReviews));
 
-            // Reset inputs & reset picker state to 5 stars
             nameInput.value = "";
             textInput.value = "";
             selectedRating = 5;
-            stars.forEach(s => s.className = "fa-solid fa-star rating-star cursor-pointer text-amber-400 transition transform hover:scale-110");
+            stars.forEach(s => s.className = "fa-solid fa-star rating-star cursor-pointer text-amber-400");
 
             loadMainReviews();
         });
