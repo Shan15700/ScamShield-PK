@@ -6,54 +6,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ScamShield PK - Pakistan's Anti-Scam Portal</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Custom CSS link -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
 
     <nav
-        class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <i class="fa-solid fa-shield-halved text-emerald-400 text-2xl"></i>
-            <span class="font-bold text-xl tracking-wider text-emerald-400">ScamShield <span
+        class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-4 md:px-6 py-4 flex justify-between items-center gap-2">
+        <div class="flex items-center gap-2 md:gap-3 shrink-0">
+            <i class="fa-solid fa-shield-halved text-emerald-400 text-xl md:text-2xl"></i>
+            <span class="font-bold text-lg md:text-xl tracking-wider text-emerald-400">ScamShield <span
                     class="text-white">PK</span></span>
         </div>
-        <a href="admin.html" class="text-sm bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition"><i
-                class="fa-solid fa-lock mr-2"></i>Admin Portal</a>
+        <a href="admin.html"
+            class="text-xs md:text-sm bg-slate-800 hover:bg-slate-700 px-3 md:px-4 py-2 rounded-lg transition whitespace-nowrap flex items-center gap-2">
+            <i class="fa-solid fa-lock"></i>
+            <span>Admin Portal</span>
+        </a>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-6 py-12 text-center">
+    <main class="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12 text-center w-full flex-1">
         <h1
-            class="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+            class="text-3xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent leading-tight">
             Protect Yourself and Your Family From Scammers!
         </h1>
-        <p class="text-slate-400 text-lg mb-8">
+        <p class="text-slate-400 text-base md:text-lg mb-8 max-w-2xl mx-auto">
             Instantly check any suspicious Call, SMS text message, or Link (URL) below.
         </p>
 
-        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 shadow-xl backdrop-blur">
-            <div class="flex justify-center border-b border-slate-700 mb-6 gap-4">
+        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 md:p-6 shadow-xl backdrop-blur">
+            <div
+                class="flex justify-between md:justify-center border-b border-slate-700 mb-6 gap-1 md:grid-cols-3 md:gap-4 overflow-x-auto">
                 <button onclick="switchTab('link')" id="tab-link"
-                    class="pb-3 px-4 font-semibold text-emerald-400 border-b-2 border-emerald-400 flex items-center gap-2 cursor-pointer transition">
-                    <i class="fa-solid fa-link"></i> Link Checker
+                    class="pb-3 px-2 md:px-4 text-xs md:text-sm font-semibold text-emerald-400 border-b-2 border-emerald-400 flex flex-col sm:flex-row items-center gap-1 md:gap-2 cursor-pointer transition flex-1 text-center justify-center whitespace-nowrap">
+                    <i class="fa-solid fa-link"></i> <span>Link Checker</span>
                 </button>
                 <button onclick="switchTab('sms')" id="tab-sms"
-                    class="pb-3 px-4 font-semibold text-slate-400 hover:text-white flex items-center gap-2 cursor-pointer transition">
-                    <i class="fa-solid fa-comment-sms"></i> SMS / Message
+                    class="pb-3 px-2 md:px-4 text-xs md:text-sm font-semibold text-slate-400 hover:text-white flex flex-col sm:flex-row items-center gap-1 md:gap-2 cursor-pointer transition flex-1 text-center justify-center whitespace-nowrap">
+                    <i class="fa-solid fa-comment-sms"></i> <span>SMS / Message</span>
                 </button>
                 <button onclick="switchTab('call')" id="tab-call"
-                    class="pb-3 px-4 font-semibold text-slate-400 hover:text-white flex items-center gap-2 cursor-pointer transition">
-                    <i class="fa-solid fa-phone"></i> Call / Number
+                    class="pb-3 px-2 md:px-4 text-xs md:text-sm font-semibold text-slate-400 hover:text-white flex flex-col sm:flex-row items-center gap-1 md:gap-2 cursor-pointer transition flex-1 text-center justify-center whitespace-nowrap">
+                    <i class="fa-solid fa-phone"></i> <span>Call / Number</span>
                 </button>
             </div>
 
-            <div class="relative mb-6">
+            <div class="relative mb-6 flex flex-col sm:block">
                 <input type="text" id="main-input" placeholder="Paste the suspicious Link (URL) here..."
-                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-4 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition pr-12 text-lg shadow-inner">
+                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-4 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition sm:pr-24 text-base md:text-lg shadow-inner">
                 <button onclick="analyzeInput()"
-                    class="absolute right-3 top-3 bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold px-5 py-1.5 rounded-lg transition cursor-pointer">
+                    class="w-full sm:w-auto mt-2 sm:mt-0 sm:absolute sm:right-3 sm:top-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold px-5 py-2.5 sm:py-1.5 rounded-lg transition cursor-pointer">
                     Check
                 </button>
             </div>
@@ -67,14 +70,25 @@
                 </div>
             </div>
 
-            <div class="flex justify-end">
+            <div class="flex justify-center sm:justify-end">
                 <button onclick="userReportScam()"
-                    class="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 text-sm font-semibold px-4 py-2 rounded-xl transition cursor-pointer flex items-center gap-2">
-                    <i class="fa-solid fa-flag"></i> I know this is a scam, Report it!
+                    class="w-full sm:w-auto justify-center bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 text-xs md:text-sm font-semibold px-4 py-2 rounded-xl transition cursor-pointer flex items-center gap-2">
+                    <i class="fa-solid fa-flag"></i> <span>I know this is a scam, Report it!</span>
                 </button>
             </div>
         </div>
     </main>
+
+    <footer
+        class="border-t border-slate-800 bg-slate-950/50 py-6 text-center text-xs md:text-sm text-slate-500 w-full shrink-0">
+        <div class="max-w-4xl mx-auto px-4 md:px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p>&copy; 2026 ScamShield PK. All Rights Reserved.</p>
+            <p class="flex items-center gap-1">
+                Designed & Developed with <i class="fa-solid fa-heart text-red-500 animate-pulse"></i> by <span
+                    class="text-slate-300 font-semibold tracking-wide">Agha Shan😎</span>
+            </p>
+        </div>
+    </footer>
 
     <script src="app.js"></script>
 </body>
