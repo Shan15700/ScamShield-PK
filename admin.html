@@ -65,47 +65,85 @@
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-6 py-12">
-        <h2 class="text-2xl font-bold mb-6 text-slate-300">User Reported Databases</h2>
+    <main class="max-w-6xl mx-auto px-6 py-12 space-y-10">
+        <!-- Databases Grid Row -->
+        <div>
+            <h2 class="text-2xl font-bold mb-6 text-slate-300">User Reported Databases</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- 1. Blocked Numbers List -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 flex flex-col h-[400px]">
+                    <h3 class="text-md font-bold mb-3 text-red-400 flex justify-between items-center">
+                        <span><i class="fa-solid fa-phone mr-2"></i>Scam Numbers</span>
+                        <span id="count-num"
+                            class="bg-red-500/10 text-red-400 text-xs px-2 py-0.5 rounded-full">0</span>
+                    </h3>
+                    <ul id="list-numbers" class="space-y-2 overflow-y-auto flex-1 pr-1"></ul>
+                </div>
 
-        <div class="grid md:grid-cols-3 gap-6">
-            <!-- 1. Blocked Numbers List -->
-            <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 flex flex-col h-[400px]">
-                <h3 class="text-md font-bold mb-3 text-red-400 flex justify-between items-center">
-                    <span><i class="fa-solid fa-phone mr-2"></i>Scam Numbers</span>
-                    <span id="count-num" class="bg-red-500/10 text-red-400 text-xs px-2 py-0.5 rounded-full">0</span>
-                </h3>
-                <ul id="list-numbers" class="space-y-2 overflow-y-auto flex-1 pr-1"></ul>
+                <!-- 2. Blocked Links List -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 flex flex-col h-[400px]">
+                    <h3 class="text-md font-bold mb-3 text-amber-400 flex justify-between items-center">
+                        <span><i class="fa-solid fa-link mr-2"></i>Phishing Links</span>
+                        <span id="count-links"
+                            class="bg-amber-500/10 text-amber-400 text-xs px-2 py-0.5 rounded-full">0</span>
+                    </h3>
+                    <ul id="list-links" class="space-y-2 overflow-y-auto flex-1 pr-1 text-xs break-all"></ul>
+                </div>
+
+                <!-- 3. Blocked SMS Phrases -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 flex flex-col h-[400px]">
+                    <h3 class="text-md font-bold mb-3 text-cyan-400 flex justify-between items-center">
+                        <span><i class="fa-solid fa-envelope-open-text mr-2"></i>Fraud SMS Text</span>
+                        <span id="count-sms"
+                            class="bg-cyan-500/10 text-cyan-400 text-xs px-2 py-0.5 rounded-full">0</span>
+                    </h3>
+                    <ul id="list-sms" class="space-y-2 overflow-y-auto flex-1 pr-1 text-xs"></ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ⭐ 4. MANAGE USER REVIEWS AND FEEDBACK (FULL WIDTH MODERATION PANEL) -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h3 class="text-lg font-bold text-amber-400"><i class="fa-solid fa-star mr-2"></i>Public Feedback
+                        Moderation</h3>
+                    <p class="text-slate-400 text-xs mt-0.5">Yahan se aap user ke jhootay (fake) ratings aur comments ko
+                        live filter karke delete kar sakte hain.</p>
+                </div>
+                <span id="count-reviews"
+                    class="bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-full">0 Reviews</span>
             </div>
 
-            <!-- 2. Blocked Links List -->
-            <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 flex flex-col h-[400px]">
-                <h3 class="text-md font-bold mb-3 text-amber-400 flex justify-between items-center">
-                    <span><i class="fa-solid fa-link mr-2"></i>Phishing Links</span>
-                    <span id="count-links"
-                        class="bg-amber-500/10 text-amber-400 text-xs px-2 py-0.5 rounded-full">0</span>
-                </h3>
-                <ul id="list-links" class="space-y-2 overflow-y-auto flex-1 pr-1 text-xs break-all"></ul>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700 text-slate-400 uppercase text-xs tracking-wider">
+                            <th class="py-3 px-4 font-semibold">User Name</th>
+                            <th class="py-3 px-4 font-semibold">Stars</th>
+                            <th class="py-3 px-4 font-semibold">Feedback Comment</th>
+                            <th class="py-3 px-4 font-semibold text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminReviewsTable" class="divide-y divide-slate-800/60">
+                        <!-- Dynamic reviews layout -->
+                    </tbody>
+                </table>
             </div>
 
-            <!-- 3. Blocked SMS Phrases -->
-            <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 flex flex-col h-[400px]">
-                <h3 class="text-md font-bold mb-3 text-cyan-400 flex justify-between items-center">
-                    <span><i class="fa-solid fa-envelope-open-text mr-2"></i>Fraud SMS Text</span>
-                    <span id="count-sms" class="bg-cyan-500/10 text-cyan-400 text-xs px-2 py-0.5 rounded-full">0</span>
-                </h3>
-                <ul id="list-sms" class="space-y-2 overflow-y-auto flex-1 pr-1 text-xs"></ul>
+            <div id="noReviewsMessage" class="hidden text-center py-8 text-slate-500 text-sm">
+                <i class="fa-solid fa-comment-slash text-2xl mb-2 block"></i> Website par koi feedback reviews mojood
+                nahi hain.
             </div>
         </div>
     </main>
 
     <script>
-        // Obfuscated client check helper method (Bypasses plaintext search engine code leaks)
+        // Obfuscated client check helper method
         function attemptLogin() {
             const email = document.getElementById('admin-email').value.trim();
             const pass = document.getElementById('admin-pass').value.trim();
 
-            // Verification layer using dynamic safe match checking
             if (btoa(email) === "YWRtaW5Ac2NhbXNoaWVsZC5waw==" && btoa(pass) === "YWRtaW4xMjM=") {
                 document.getElementById('login-overlay').classList.add('hidden');
                 sessionStorage.setItem('isAdminLoggedIn', 'true');
@@ -115,7 +153,6 @@
             }
         }
 
-        // Keep session persistent if logged in
         if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
             document.getElementById('login-overlay').classList.add('hidden');
         }
@@ -129,6 +166,7 @@
             renderDataList('scamNumbers', 'list-numbers', 'count-num');
             renderDataList('scamLinks', 'list-links', 'count-links');
             renderDataList('scamSMS', 'list-sms', 'count-sms');
+            loadAdminReviews(); // Load reviews under same authentication pipeline
         }
 
         function renderDataList(storageKey, listId, countId) {
@@ -153,6 +191,67 @@
             data.splice(index, 1);
             localStorage.setItem(storageKey, JSON.stringify(data));
             loadAllReportedData();
+        }
+
+        // ⭐ NEW: Load and Render Reviews Function for Admin Panel Mod
+        function loadAdminReviews() {
+            const tableBody = document.getElementById("adminReviewsTable");
+            const emptyAlert = document.getElementById("noReviewsMessage");
+
+            // Sync with default local mock reviews if empty
+            const reviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
+                { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
+                { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
+            ];
+
+            document.getElementById("count-reviews").innerText = `${reviews.length} Reviews`;
+            tableBody.innerHTML = '';
+
+            if (reviews.length === 0) {
+                emptyAlert.classList.remove('hidden');
+                return;
+            } else {
+                emptyAlert.classList.add('hidden');
+            }
+
+            reviews.forEach((rev, index) => {
+                // Generate Dynamic font-awesome golden stars
+                let starsHTML = "";
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= rev.rating) {
+                        starsHTML += `<i class="fa-solid fa-star text-amber-400 mr-0.5"></i>`;
+                    } else {
+                        starsHTML += `<i class="fa-regular fa-star text-slate-600 mr-0.5"></i>`;
+                    }
+                }
+
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-slate-800/30 transition">
+                        <td class="py-3 px-4 font-bold text-slate-200">${rev.name}</td>
+                        <td class="py-3 px-4 text-xs">${starsHTML}</td>
+                        <td class="py-3 px-4 text-slate-400 text-xs">${rev.text}</td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="deleteReview(${index})" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white border border-red-500/20 text-xs px-3 py-1 rounded-xl transition cursor-pointer">
+                                <i class="fa-solid fa-trash mr-1"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // ⭐ NEW: Delete Specific Review Entry
+        function deleteReview(index) {
+            if (confirm("🚨 Are you sure you want to permanently delete this user feedback?")) {
+                const reviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
+                    { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
+                    { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
+                ];
+
+                reviews.splice(index, 1);
+                localStorage.setItem("scamShieldReviews", JSON.stringify(reviews));
+                loadAdminReviews(); // Refresh component
+            }
         }
 
         if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {

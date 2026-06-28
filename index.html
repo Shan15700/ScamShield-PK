@@ -88,41 +88,82 @@
         </div>
     </main>
 
-    <!-- ⭐ Rating & Feedback Section -->
-    <div class="bg-dark rounded-4 p-4 mb-4 border border-secondary text-light">
-        <h3 class="text-warning mb-3 h5 text-uppercase fw-bold">
-            <i class="bi bi-star-fill me-2"></i> App Feedback & Ratings
-        </h3>
-        <p class="text-muted small">Kya is tool ne aapko scam se bachaya? Apna experience share karein aur doosron ko
-            mehfooz rakhein!</p>
+    <!-- ⭐ PREMIUM RATING & FEEDBACK SECTION -->
+    <div class="max-w-4xl mx-auto mt-12 px-4">
+        <div class="bg-slate-800/40 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-2xl text-left">
 
-        <form id="feedbackForm" class="mb-4">
-            <!-- Star Rating Picker -->
-            <div class="mb-3">
-                <label class="form-label text-muted small d-block">Aapki Rating:</label>
-                <div id="starRatingPicker" class="fs-3 d-inline-flex gap-2 text-secondary">
-                    <i class="bi bi-star-fill rating-star" data-value="1" style="cursor: pointer;"></i>
-                    <i class="bi bi-star-fill rating-star" data-value="2" style="cursor: pointer;"></i>
-                    <i class="bi bi-star-fill rating-star" data-value="3" style="cursor: pointer;"></i>
-                    <i class="bi bi-star-fill rating-star" data-value="4" style="cursor: pointer;"></i>
-                    <i class="bi bi-star-fill rating-star" data-value="5" style="cursor: pointer;"></i>
+            <!-- Header -->
+            <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-700/60 pb-4 mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-amber-400 tracking-wide flex items-center gap-2">
+                        <i class="fa-solid fa-star animate-pulse"></i> App Feedback & Ratings
+                    </h3>
+                    <p class="text-slate-400 text-xs mt-1">Kya is tool ne aapko scam se bachaya? Apna experience share
+                        karein aur doosron ko safe rakhein!</p>
+                </div>
+                <span
+                    class="self-start sm:self-center bg-amber-500/10 text-amber-400 text-xs font-semibold px-3 py-1 rounded-full border border-amber-500/20">
+                    Community Driven
+                </span>
+            </div>
+
+            <!-- Feedback Form -->
+            <form id="feedbackForm" class="space-y-4">
+                <!-- Star Picker -->
+                <div>
+                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">Aapki
+                        Rating:</label>
+                    <div id="starRatingPicker" class="flex gap-2 text-2xl text-amber-400">
+                        <i class="fa-solid fa-star rating-star cursor-pointer transition transform hover:scale-110"
+                            data-value="1"></i>
+                        <i class="fa-solid fa-star rating-star cursor-pointer transition transform hover:scale-110"
+                            data-value="2"></i>
+                        <i class="fa-solid fa-star rating-star cursor-pointer transition transform hover:scale-110"
+                            data-value="3"></i>
+                        <i class="fa-solid fa-star rating-star cursor-pointer transition transform hover:scale-110"
+                            data-value="4"></i>
+                        <i class="fa-solid fa-star rating-star cursor-pointer transition transform hover:scale-110"
+                            data-value="5"></i>
+                    </div>
+                </div>
+
+                <!-- Name and Text Grid -->
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <div class="sm:col-span-1">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Aapka
+                            Naam</label>
+                        <input type="text" id="feedbackName" placeholder="e.g., Bilal"
+                            class="w-full bg-slate-950/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-400 transition"
+                            required>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Apna
+                            Experience / Feedback</label>
+                        <input type="text" id="feedbackText"
+                            placeholder="e.g., Mujhe fake Easypaisa lottery call se bachaya!"
+                            class="w-full bg-slate-950/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-400 transition"
+                            required>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit"
+                    class="w-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold py-3 rounded-xl transition cursor-pointer shadow-lg text-sm uppercase tracking-wider flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Submit Verification Review
+                </button>
+            </form>
+
+            <!-- Live Reviews Feed -->
+            <div class="mt-8 pt-6 border-top border-slate-700/60">
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-comments text-slate-500"></i> Recent Community Activity
+                </h4>
+                <div id="reviewsContainer" class="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+                    <!-- Javascript dynamic list rows inject karega -->
                 </div>
             </div>
 
-            <!-- Name & Comment Input -->
-            <div class="mb-3">
-                <input type="text" id="feedbackName" class="form-control bg-secondary text-light border-0 mb-2"
-                    placeholder="Aapka Naam" required>
-                <textarea id="feedbackText" class="form-control bg-secondary text-light border-0" rows="2"
-                    placeholder="Apna feedback likhein... (e.g., Mujhe fake BISP link se bachaya!)" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-warning w-100 fw-bold">Submit Review</button>
-        </form>
-
-        <!-- Recent Reviews List -->
-        <h4 class="h6 text-uppercase fw-bold text-muted border-top pt-3 mb-3">Recent Community Reviews</h4>
-        <div id="reviewsContainer" class="d-flex flex-column gap-2" style="max-height: 250px; overflow-y: auto;">
-            <!-- Reviews automatically yahan add honge -->
         </div>
     </div>
 

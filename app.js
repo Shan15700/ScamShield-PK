@@ -282,3 +282,99 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize Reviews on Load
     loadReviews();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const stars = document.querySelectorAll("#starRatingPicker .rating-star");
+    const feedbackForm = document.getElementById("feedbackForm");
+    const reviewsContainer = document.getElementById("reviewsContainer");
+    let selectedRating = 5; // Default rating sets to 5 stars
+
+    // 1. Star Picker Click Handler (FontAwesome Class Swap)
+    stars.forEach((star, index) => {
+        star.addEventListener("click", () => {
+            selectedRating = index + 1;
+            stars.forEach((s, idx) => {
+                if (idx <= index) {
+                    s.className = "fa-solid fa-star rating-star cursor-pointer text-amber-400 transition transform hover:scale-110";
+                } else {
+                    s.className = "fa-regular fa-star rating-star cursor-pointer text-slate-600 transition transform hover:scale-110";
+                }
+            });
+        });
+    });
+
+    // 2. Load and Sync Reviews from LocalStorage
+    const loadMainReviews = () => {
+        if (!reviewsContainer) return;
+        reviewsContainer.innerHTML = "";
+
+        // Same database matching admin view
+        const reviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
+            { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
+            { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
+        ];
+
+        if (reviews.length === 0) {
+            reviewsContainer.innerHTML = `<p class="text-center text-slate-500 text-xs py-4">Koi feedback nahi mila. Pehle review aap dein!</p>`;
+            return;
+        }
+
+        // Display rows (Newest on top)
+        reviews.forEach(rev => {
+            let starsHTML = "";
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rev.rating) {
+                    starsHTML += `<i class="fa-solid fa-star text-amber-400 mr-0.5 text-xs"></i>`;
+                } else {
+                    starsHTML += `<i class="fa-regular fa-star text-slate-600 mr-0.5 text-xs"></i>`;
+                }
+            }
+
+            const reviewDiv = document.createElement("div");
+            reviewDiv.className = "bg-slate-900/40 border border-slate-800 p-3.5 rounded-xl transition hover:border-slate-700";
+            reviewDiv.innerHTML = `
+                <div class="flex justify-between items-center mb-1.5">
+                    <span class="font-bold text-slate-200 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-circle-user text-slate-500 text-base"></i> ${rev.name}
+                    </span>
+                    <div class="bg-slate-950/80 px-2 py-0.5 rounded border border-slate-800/80">${starsHTML}</div>
+                </div>
+                <p class="text-slate-400 text-xs leading-relaxed m-0">${rev.text}</p>
+            `;
+            reviewsContainer.insertBefore(reviewDiv, reviewsContainer.firstChild);
+        });
+    };
+
+    // 3. Handle Form Submission
+    if (feedbackForm) {
+        feedbackForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById("feedbackName");
+            const textInput = document.getElementById("feedbackText");
+
+            const newReview = {
+                name: nameInput.value.trim(),
+                rating: selectedRating,
+                text: textInput.value.trim()
+            };
+
+            const currentReviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
+                { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
+                { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
+            ];
+
+            currentReviews.push(newReview);
+            localStorage.setItem("scamShieldReviews", JSON.stringify(currentReviews));
+
+            // Reset inputs & reset picker state to 5 stars
+            nameInput.value = "";
+            textInput.value = "";
+            selectedRating = 5;
+            stars.forEach(s => s.className = "fa-solid fa-star rating-star cursor-pointer text-amber-400 transition transform hover:scale-110");
+
+            loadMainReviews();
+        });
+    }
+
+    loadMainReviews();
+});
