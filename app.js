@@ -289,13 +289,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const reviewsContainer = document.getElementById("reviewsContainer");
     let selectedRating = 5;
 
-    // 1. Mobile-friendly Star Selector Toggle
+    // 1. Theme Synced Star Selector Toggle
     stars.forEach((star, index) => {
         star.addEventListener("click", () => {
             selectedRating = index + 1;
             stars.forEach((s, idx) => {
                 if (idx <= index) {
-                    s.className = "fa-solid fa-star rating-star cursor-pointer text-amber-400 transition";
+                    s.className = "fa-solid fa-star rating-star cursor-pointer text-[#00e699] transition";
                 } else {
                     s.className = "fa-regular fa-star rating-star cursor-pointer text-slate-600 transition";
                 }
@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 2. Render Loop with Balanced Sizing
+    // 2. Load and Render Loop with Smaller Stars for Mobile Layout
     const loadMainReviews = () => {
         if (!reviewsContainer) return;
         reviewsContainer.innerHTML = "";
@@ -322,21 +322,20 @@ document.addEventListener("DOMContentLoaded", () => {
             let starsHTML = "";
             for (let i = 1; i <= 5; i++) {
                 if (i <= rev.rating) {
-                    starsHTML += `<i class="fa-solid fa-star text-amber-400 mr-0.5 text-[10px]"></i>`;
+                    starsHTML += `<i class="fa-solid fa-star text-[#00e699] mr-0.5 text-[9px]"></i>`;
                 } else {
-                    starsHTML += `<i class="fa-regular fa-star text-slate-600 mr-0.5 text-[10px]"></i>`;
+                    starsHTML += `<i class="fa-regular fa-star text-slate-700 mr-0.5 text-[9px]"></i>`;
                 }
             }
 
             const reviewDiv = document.createElement("div");
-            // Transparent background blends inside any system root color
-            reviewDiv.className = "bg-black/20 border border-white/5 p-2.5 rounded-xl flex flex-col gap-0.5";
+            reviewDiv.className = "bg-[#0b0f19]/40 border border-slate-800/60 p-2.5 rounded-xl flex flex-col gap-0.5 animate__animated animate__fadeIn";
             reviewDiv.innerHTML = `
                 <div class="flex justify-between items-center">
                     <span class="font-bold text-slate-300 text-xs flex items-center gap-1.5">
                         <i class="fa-solid fa-circle-user text-slate-500 text-xs"></i> ${rev.name}
                     </span>
-                    <div class="bg-black/30 px-1.5 py-0.5 rounded border border-white/5">${starsHTML}</div>
+                    <div class="bg-black/30 px-1.5 py-0.5 rounded border border-slate-800/50">${starsHTML}</div>
                 </div>
                 <p class="text-slate-400 text-[11px] md:text-xs leading-normal m-0 pl-5">${rev.text}</p>
             `;
@@ -363,7 +362,7 @@ document.addEventListener("DOMContentLoaded", () => {
             nameInput.value = "";
             textInput.value = "";
             selectedRating = 5;
-            stars.forEach(s => s.className = "fa-solid fa-star rating-star cursor-pointer text-amber-400");
+            stars.forEach(s => s.className = "fa-solid fa-star rating-star cursor-pointer text-[#00e699]");
 
             loadMainReviews();
         });
