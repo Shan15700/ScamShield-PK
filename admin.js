@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Dashboard ke stats load karne ka logic
+    // Load and Display Analytical Dashboard Counts
     const loadDashboardStats = () => {
         const linksList = JSON.parse(localStorage.getItem('scamLinks')) || [];
         const smsList = JSON.parse(localStorage.getItem('scamSMS')) || [];
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('stat-calls').innerText = callsList.length;
     };
 
-    // 2. Reviews ko admin table mein render karne ka logic
+    // Load and Display Dynamic Moderation Data Loops
     const renderAdminReviews = () => {
         const tableBody = document.getElementById("adminReviewsBody");
         const countBadge = document.getElementById("review-count-badge");
@@ -18,13 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         tableBody.innerHTML = "";
 
-        // Default mock reviews agar localStorage khali ho
+        // Default local fallback mock dataset array structure
         const reviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
             { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
             { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
         ];
 
-        // Khali names filter karne ka strict check (image_240642.png ka fix)
+        // Sanitize check loop preventing rendering of empty objects or nameless submissions
         const strictValidReviews = reviews.filter(r => r && r.name && r.name.trim() !== "");
         countBadge.innerText = strictValidReviews.length;
 
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Latest reviews ko top par lane ke liye loop
+        // Loop array in reverse matrix format to place latest submittals at top row
         strictValidReviews.forEach((rev, originalIndex) => {
             let starsHTML = "";
             for (let i = 1; i <= 5; i++) {
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
             tableBody.insertBefore(tr, tableBody.firstChild);
         });
 
-        // Delete buttons par click listener lagana
+        // Event Delegation listener bindings for actions
         document.querySelectorAll(".delete-btn").forEach(btn => {
             btn.addEventListener("click", function (e) {
                 const targetIndex = parseInt(this.getAttribute("data-index"));
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    // 3. Review delete karne ka global function
+    // Callback execution tracking matrix array removals
     window.deleteReviewItem = (index) => {
         if (!confirm("Kya aap waqai is feedback review ko system se delete karna chahte hain?")) return;
 
@@ -86,15 +86,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const strictValidReviews = reviews.filter(r => r && r.name && r.name.trim() !== "");
 
-        // Array se item remove karna
+        // Remove item from state index
         strictValidReviews.splice(index, 1);
         localStorage.setItem("scamShieldReviews", JSON.stringify(strictValidReviews));
 
-        // UI ko refresh karna
         renderAdminReviews();
     };
 
-    // Initialize scripts
+    // Initialize scripts execution
     loadDashboardStats();
     renderAdminReviews();
 });
