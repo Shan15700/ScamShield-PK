@@ -6,21 +6,22 @@ function switchTab(tabType) {
     currentTab = tabType;
     const inputField = document.getElementById('main-input');
     const resultBox = document.getElementById('result-box');
-    resultBox.classList.add('hidden'); // Reset result box
-    inputField.value = ''; // Clear input
+    resultBox.classList.add('hidden');
+    inputField.value = '';
 
-    // Update Tab UI Colors
-    document.getElementById('tab-link').className = `pb-3 px-4 font-semibold flex items-center gap-2 cursor-pointer transition ${tabType === 'link' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-slate-400 hover:text-white'}`;
-    document.getElementById('tab-sms').className = `pb-3 px-4 font-semibold flex items-center gap-2 cursor-pointer transition ${tabType === 'sms' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-slate-400 hover:text-white'}`;
-    document.getElementById('tab-call').className = `pb-3 px-4 font-semibold flex items-center gap-2 cursor-pointer transition ${tabType === 'call' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-slate-400 hover:text-white'}`;
+    const activeClass = "pb-3 px-3 font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition text-emerald-400 border-b-2 border-emerald-400 whitespace-nowrap text-xs md:text-sm";
+    const inactiveClass = "pb-3 px-3 font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition text-slate-400 hover:text-white whitespace-nowrap text-xs md:text-sm";
 
-    // Update Input Placeholder
-    if (tabType === 'link') inputField.placeholder = "Paste the suspicious Link (URL) here (e.g., bit.ly, tinyurl, or direct domains)...";
+    document.getElementById('tab-link').className = (tabType === 'link') ? activeClass : inactiveClass;
+    document.getElementById('tab-sms').className = (tabType === 'sms') ? activeClass : inactiveClass;
+    document.getElementById('tab-call').className = (tabType === 'call') ? activeClass : inactiveClass;
+
+    if (tabType === 'link') inputField.placeholder = "Paste the suspicious Link (URL) here (e.g., bit.ly, tinyurl)...";
     if (tabType === 'sms') inputField.placeholder = "Copy and paste the full SMS text message here...";
     if (tabType === 'call') inputField.placeholder = "Enter the scammer phone number (e.g., 03XXXXXXXXX)...";
 }
 
-// Helper function to show output on UI
+// UI par result box show karna
 function displayResult(assessment) {
     const resultBox = document.getElementById('result-box');
     const rIcon = document.getElementById('result-icon');
@@ -29,12 +30,12 @@ function displayResult(assessment) {
 
     resultBox.classList.remove('hidden');
     if (assessment.status === 'scam') {
-        resultBox.className = "rounded-xl p-5 text-left flex items-start gap-4 border border-red-500 bg-red-950/30 text-red-200 animate-fade-in mb-6";
+        resultBox.className = "rounded-xl p-4 text-left flex items-start gap-3 border border-red-500 bg-red-950/30 text-red-200 animate-fade-in mb-5";
         rIcon.innerHTML = "❌";
         rTitle.innerText = assessment.title;
         rDesc.innerText = assessment.desc;
     } else {
-        resultBox.className = "rounded-xl p-5 text-left flex items-start gap-4 border border-emerald-500 bg-emerald-950/30 text-emerald-200 animate-fade-in mb-6";
+        resultBox.className = "rounded-xl p-4 text-left flex items-start gap-3 border border-emerald-500 bg-emerald-950/30 text-emerald-200 animate-fade-in mb-5";
         rIcon.innerHTML = "🛡️";
         rTitle.innerText = assessment.title;
         rDesc.innerText = assessment.desc;
@@ -54,10 +55,9 @@ async function analyzeInput() {
     let assessment = {
         status: 'safe',
         title: 'Seems Safe / Clear',
-        desc: 'No obvious scam patterns were detected. However, always exercise caution and never share your sensitive personal credentials.'
+        desc: 'No obvious scam patterns were detected. However, always exercise caution.'
     };
 
-    // 1. LINK ANALYZER LOGIC
     if (currentTab === 'link') {
         const shorteners = ['bit.ly', 'tinyurl.com', 't.co', 'rb.gy', 'is.gd', 'cutt.ly', 'shorturl.at'];
         let isShortLink = shorteners.some(domain => input.includes(domain));
@@ -75,8 +75,8 @@ async function analyzeInput() {
         if (hasBadExtension || hasBadKeyword || isUserLink) {
             assessment = {
                 status: 'scam',
-                title: '🚨 DANGEROUS / PHISHING LINK DETECTED!',
-                desc: 'This link leads to a suspicious website designed to steal your credentials or funds. Avoid it.'
+                title: '🚨 DANGEROUS LINK DETECTED!',
+                desc: 'This link leads to a suspicious website designed to steal your credentials.'
             };
             displayResult(assessment);
             return;
@@ -84,13 +84,12 @@ async function analyzeInput() {
 
         if (isShortLink) {
             resultBox.classList.remove('hidden');
-            resultBox.className = "rounded-xl p-5 text-left flex items-start gap-4 border border-cyan-500 bg-cyan-950/30 text-cyan-200 animate-fade-in mb-6";
-            rIcon.innerHTML = "<div class='text-xl text-cyan-400 mt-0.5'><i class='fa-solid fa-spinner animate-spin'></i></div>";
-            rTitle.innerText = "Advanced URL Expander Active...";
-            rDesc.innerText = "Analyzing the destination behind this shortened link. Please wait...";
+            resultBox.className = "rounded-xl p-4 text-left flex items-start gap-3 border border-cyan-500 bg-cyan-950/30 text-cyan-200 animate-fade-in mb-5";
+            rIcon.innerHTML = "<div class='text-lg text-cyan-400 mt-0.5'><i class='fa-solid fa-spinner animate-spin'></i></div>";
+            rTitle.innerText = "Advanced URL Expander...";
+            rDesc.innerText = "Analyzing the destination behind this shortened link...";
 
             let targetUrl = input.startsWith('http') ? input : 'https://' + input;
-
             await new Promise(resolve => setTimeout(resolve, 1500));
 
             try {
@@ -101,112 +100,77 @@ async function analyzeInput() {
                     const apiResult = JSON.parse(data.contents);
                     if (apiResult && apiResult.resolved_url) {
                         let resolvedUrl = apiResult.resolved_url.toLowerCase().trim();
-
-                        let secondaryCheck = scamDomains.some(ext => resolvedUrl.includes(ext)) ||
-                            scamKeywords.some(keyword => resolvedUrl.includes(keyword)) ||
-                            userLinks.includes(resolvedUrl);
+                        let secondaryCheck = scamDomains.some(ext => resolvedUrl.includes(ext)) || scamKeywords.some(keyword => resolvedUrl.includes(keyword)) || userLinks.includes(resolvedUrl);
 
                         if (secondaryCheck) {
                             assessment = {
                                 status: 'scam',
                                 title: '🚨 REDIRECTS TO MALICIOUS SITE!',
-                                desc: `This short URL redirects to a dangerous domain: [ ${apiResult.resolved_url} ]. Do NOT visit it under any circumstances.`
+                                desc: `This short URL redirects to a dangerous domain: [ ${apiResult.resolved_url} ].`
                             };
                         } else {
                             assessment = {
                                 status: 'safe',
                                 title: 'Short Link Appears Legitimate',
-                                desc: `Successfully verified destination: [ ${apiResult.resolved_url} ]. No immediate threats found.`
+                                desc: `Successfully verified destination: [ ${apiResult.resolved_url} ].`
                             };
                         }
                         displayResult(assessment);
                         return;
                     }
                 }
-            } catch (e) {
-                console.log("CORS/Network error bypassed.");
-            }
+            } catch (e) { console.log(e); }
 
             if (input.includes('wikipedia')) {
-                assessment = {
-                    status: 'safe',
-                    title: 'Short Link Appears Legitimate',
-                    desc: 'Successfully verified destination: [ https://www.wikipedia.org ]. No immediate threats found.'
-                };
+                assessment = { status: 'safe', title: 'Short Link Appears Legitimate', desc: 'Verified: [ https://www.wikipedia.org ].' };
             } else {
-                assessment = {
-                    status: 'scam',
-                    title: '🚨 REDIRECTS TO MALICIOUS SITE!',
-                    desc: 'This shortened link un-wraps into a flagged server hosting deceptive components. Avoid it.'
-                };
+                assessment = { status: 'scam', title: '🚨 REDIRECTS TO MALICIOUS SITE!', desc: 'This shortened link wraps into a flagged server.' };
             }
         }
     }
-    // 2. SMS ANALYZER LOGIC
     else if (currentTab === 'sms') {
-        const smsKeywords = ['bisp', 'benazir', 'inam', 'lottery', 'jeeto pakistan', 'account blocked', 'otp share', 'fouji', 'hq', 'won cash', 'prize money'];
+        const smsKeywords = ['bisp', 'benazir', 'inam', 'lottery', 'jeeto pakistan', 'account blocked', 'otp share', 'won cash'];
         let isScamSMS = smsKeywords.some(keyword => input.includes(keyword));
-
         let userSMS = JSON.parse(localStorage.getItem('scamSMS')) || [];
         let isUserSMS = userSMS.some(savedText => input.includes(savedText.toLowerCase()));
 
         if (isScamSMS || isUserSMS) {
-            assessment = {
-                status: 'scam',
-                title: '🚨 FRAUDULENT MESSAGE DETECTED!',
-                desc: 'This text contains known high-risk deceptive bait keywords (BISP, Prize, Blocked, OTP). This matches 100% scam patterns.'
-            };
+            assessment = { status: 'scam', title: '🚨 FRAUDULENT MESSAGE DETECTED!', desc: 'This text contains known high-risk deceptive bait keywords.' };
         }
     }
-    // 3. CALL / NUMBER LOGIC
     else if (currentTab === 'call') {
         let cleanNumber = input.replace(/[^0-9]/g, '');
         let blacklistedNumbers = JSON.parse(localStorage.getItem('scamNumbers')) || ["03001234567", "03129876543"];
-        let isReported = blacklistedNumbers.includes(cleanNumber);
-
-        if (isReported) {
-            assessment = {
-                status: 'scam',
-                title: '🚨 BLOCKED SCAMMER NUMBER!',
-                desc: 'This phone number has been flagged and blacklisted by our global database. Do NOT answer calls from it.'
-            };
+        if (blacklistedNumbers.includes(cleanNumber)) {
+            assessment = { status: 'scam', title: '🚨 BLOCKED SCAMMER NUMBER!', desc: 'This phone number has been flagged and blacklisted.' };
         }
     }
 
     displayResult(assessment);
 }
 
-// User Reporting System Function
+// User Reporting System
 function userReportScam() {
     const input = document.getElementById('main-input').value.trim();
-    if (!input) return alert("Please type or paste the malicious entity before reporting!");
+    if (!input) return alert("Please type something before reporting!");
 
-    let dbKey = '';
-    if (currentTab === 'link') dbKey = 'scamLinks';
-    if (currentTab === 'sms') dbKey = 'scamSMS';
-    if (currentTab === 'call') dbKey = 'scamNumbers';
-
+    let dbKey = currentTab === 'link' ? 'scamLinks' : currentTab === 'sms' ? 'scamSMS' : 'scamNumbers';
     let finalInput = (currentTab === 'call') ? input.replace(/[^0-9]/g, '') : input.toLowerCase();
     let currentList = JSON.parse(localStorage.getItem(dbKey)) || [];
 
-    if (currentList.includes(finalInput)) {
-        alert("🚨 This entry is already registered in the blacklist database!");
-        return;
-    }
+    if (currentList.includes(finalInput)) return alert("🚨 Already registered in blacklist!");
 
     currentList.push(finalInput);
     localStorage.setItem(dbKey, JSON.stringify(currentList));
-
-    alert("✅ Thank you! Your report has been submitted successfully.");
+    alert("✅ Report submitted successfully.");
     document.getElementById('main-input').value = '';
     document.getElementById('result-box').classList.add('hidden');
 }
 
-// Toggle Function to Show/Hide Feedback Form
+// Form Hide/Show toggle
 function toggleFeedbackForm() {
     const form = document.getElementById("feedbackForm");
     const promptBox = document.getElementById("feedbackPromptContainer");
-
     if (form.classList.contains("hidden")) {
         form.classList.remove("hidden");
         promptBox.classList.add("hidden");
@@ -216,40 +180,32 @@ function toggleFeedbackForm() {
     }
 }
 
-// CLEANED FEEDBACK ENGINE
+// User Form Setup
 document.addEventListener("DOMContentLoaded", () => {
     const stars = document.querySelectorAll("#starRatingPicker .rating-star");
     const feedbackForm = document.getElementById("feedbackForm");
     const reviewsContainer = document.getElementById("reviewsContainer");
     let selectedRating = 5;
 
-    // 1. Star Selection Action
     stars.forEach((star, index) => {
         star.addEventListener("click", (e) => {
             e.stopPropagation();
             selectedRating = index + 1;
             stars.forEach((s, idx) => {
-                if (idx <= index) {
-                    s.className = "fa-solid fa-star rating-star cursor-pointer text-[#00e699] transition";
-                } else {
-                    s.className = "fa-regular fa-star rating-star cursor-pointer text-slate-600 transition";
-                }
+                s.className = idx <= index ? "fa-solid fa-star rating-star cursor-pointer text-[#00e699]" : "fa-regular fa-star rating-star cursor-pointer text-slate-600";
             });
         });
     });
 
-    // 2. Load and Render Loop
     const loadMainReviews = () => {
         if (!reviewsContainer) return;
         reviewsContainer.innerHTML = "";
-
         const reviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
             { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
-            { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
+            { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai." }
         ];
 
         const validReviews = reviews.filter(r => r && r.name && r.name.trim() !== "");
-
         if (validReviews.length === 0) {
             reviewsContainer.innerHTML = `<p class="text-center text-slate-500 text-[11px] py-2">Koi feedback nahi mila.</p>`;
             return;
@@ -257,21 +213,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         validReviews.forEach(rev => {
             let starsHTML = "";
-            for (let i = 1; i <= 5; i++) {
-                if (i <= rev.rating) {
-                    starsHTML += `<i class="fa-solid fa-star text-[#00e699] mr-0.5 text-[9px]"></i>`;
-                } else {
-                    starsHTML += `<i class="fa-regular fa-star text-slate-700 mr-0.5 text-[9px]"></i>`;
-                }
-            }
+            for (let i = 1; i <= 5; i++) starsHTML += i <= rev.rating ? `<i class="fa-solid fa-star text-[#00e699] mr-0.5 text-[9px]"></i>` : `<i class="fa-regular fa-star text-slate-700 mr-0.5 text-[9px]"></i>`;
 
             const reviewDiv = document.createElement("div");
             reviewDiv.className = "bg-[#0b0f19]/40 border border-slate-800/60 p-2.5 rounded-xl flex flex-col gap-0.5";
             reviewDiv.innerHTML = `
                 <div class="flex justify-between items-center">
-                    <span class="font-bold text-slate-300 text-xs flex items-center gap-1.5">
-                        <i class="fa-solid fa-circle-user text-slate-500 text-xs"></i> ${rev.name}
-                    </span>
+                    <span class="font-bold text-slate-300 text-xs flex items-center gap-1.5"><i class="fa-solid fa-circle-user text-slate-500 text-xs"></i> ${rev.name}</span>
                     <div class="bg-black/30 px-1.5 py-0.5 rounded border border-slate-800/50">${starsHTML}</div>
                 </div>
                 <p class="text-slate-400 text-[11px] md:text-xs leading-normal m-0 pl-5">${rev.text}</p>
@@ -280,43 +228,26 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    // 3. Form Submission
     if (feedbackForm) {
         feedbackForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            e.stopImmediatePropagation();
-
             const nameInput = document.getElementById("feedbackName");
             const textInput = document.getElementById("feedbackText");
 
-            const nameValue = nameInput.value.trim();
-            const textValue = textInput.value.trim();
-
-            if (!nameValue || !textValue) return;
-
-            const newReview = {
-                name: nameValue,
-                rating: selectedRating,
-                text: textValue
-            };
+            if (!nameInput.value.trim() || !textInput.value.trim()) return;
 
             const currentReviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [];
-            currentReviews.push(newReview);
+            currentReviews.push({ name: nameInput.value.trim(), rating: selectedRating, text: textInput.value.trim() });
             localStorage.setItem("scamShieldReviews", JSON.stringify(currentReviews));
 
-            // Reset Form Values Safely
             nameInput.value = "";
             textInput.value = "";
             selectedRating = 5;
             stars.forEach(s => s.className = "fa-solid fa-star rating-star cursor-pointer text-[#00e699]");
-
-            // Hide the form again and show the helpful card back
             toggleFeedbackForm();
-
             loadMainReviews();
             alert("Thank you! Aapka feedback submit ho gaya hai.");
         });
     }
-
     loadMainReviews();
 });

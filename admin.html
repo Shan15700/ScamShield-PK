@@ -2,262 +2,94 @@
 <html lang="en">
 
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3WLTRR8S7Z"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-3WLTRR8S7Z');
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScamShield PK - Secured Admin Panel</title>
+    <title>Admin Dashboard - ScamShield PK</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
 
-    <!-- 🔒 SECURE LOGIN OVERLAY SCREEN -->
-    <div id="login-overlay" class="fixed inset-0 bg-slate-950 z-[100] flex items-center justify-center p-6">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl">
-            <div
-                class="w-16 h-16 bg-cyan-500/10 text-cyan-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                <i class="fa-solid fa-lock"></i>
-            </div>
-            <h2 class="text-2xl font-bold text-white mb-2">Admin Control Room</h2>
-            <p class="text-slate-400 text-sm mb-6">Only authorized administration accounts can access this panel.</p>
-
-            <div class="space-y-4 text-left">
-                <div>
-                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Email Address</label>
-                    <input type="email" id="admin-email" placeholder="admin@scamshield.pk"
-                        class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white mt-1 focus:outline-none focus:border-cyan-400">
-                </div>
-                <div>
-                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Password</label>
-                    <input type="password" id="admin-pass" placeholder="••••••••"
-                        class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white mt-1 focus:outline-none focus:border-cyan-400">
-                </div>
-                <button onclick="attemptLogin()"
-                    class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-3 rounded-xl transition cursor-pointer mt-2">
-                    Login Securely
-                </button>
-            </div>
+    <nav class="border-b border-slate-800 bg-slate-950 px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-user-gear text-amber-400 text-xl"></i>
+            <span class="font-bold text-base md:text-lg text-amber-400 tracking-wide">Admin Control Control Panel</span>
         </div>
-    </div>
-
-    <!-- 🖥️ DASHBOARD INTERFACE -->
-    <nav class="border-b border-slate-800 bg-slate-900 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <i class="fa-solid fa-square-poll-vertical text-cyan-400 text-2xl"></i>
-            <span class="font-bold text-xl tracking-wider text-cyan-400">Admin <span
-                    class="text-white">Dashboard</span></span>
-        </div>
-        <div class="flex items-center gap-4">
-            <button onclick="logout()" class="text-sm text-red-400 hover:text-red-300 cursor-pointer"><i
-                    class="fa-solid fa-power-off mr-2"></i>Logout</button>
-            <a href="index.html" class="text-sm bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition"><i
-                    class="fa-solid fa-arrow-left mr-2"></i>Back to Website</a>
-        </div>
+        <a href="index.html"
+            class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left"></i> Back to Main
+        </a>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-6 py-12 space-y-10">
-        <!-- Databases Grid Row -->
-        <div>
-            <h2 class="text-2xl font-bold mb-6 text-slate-300">User Reported Databases</h2>
-            <div class="grid md:grid-cols-3 gap-6">
-                <!-- 1. Blocked Numbers List -->
-                <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 flex flex-col h-[400px]">
-                    <h3 class="text-md font-bold mb-3 text-red-400 flex justify-between items-center">
-                        <span><i class="fa-solid fa-phone mr-2"></i>Scam Numbers</span>
-                        <span id="count-num"
-                            class="bg-red-500/10 text-red-400 text-xs px-2 py-0.5 rounded-full">0</span>
-                    </h3>
-                    <ul id="list-numbers" class="space-y-2 overflow-y-auto flex-1 pr-1"></ul>
-                </div>
+    <main class="max-w-5xl mx-auto px-4 py-6 md:py-10 w-full flex-1 space-y-6">
 
-                <!-- 2. Blocked Links List -->
-                <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 flex flex-col h-[400px]">
-                    <h3 class="text-md font-bold mb-3 text-amber-400 flex justify-between items-center">
-                        <span><i class="fa-solid fa-link mr-2"></i>Phishing Links</span>
-                        <span id="count-links"
-                            class="bg-amber-500/10 text-amber-400 text-xs px-2 py-0.5 rounded-full">0</span>
-                    </h3>
-                    <ul id="list-links" class="space-y-2 overflow-y-auto flex-1 pr-1 text-xs break-all"></ul>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Blacklisted Links</p>
+                    <h3 id="stat-links" class="text-xl font-black text-emerald-400 mt-0.5">0</h3>
                 </div>
-
-                <!-- 3. Blocked SMS Phrases -->
-                <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-5 flex flex-col h-[400px]">
-                    <h3 class="text-md font-bold mb-3 text-cyan-400 flex justify-between items-center">
-                        <span><i class="fa-solid fa-envelope-open-text mr-2"></i>Fraud SMS Text</span>
-                        <span id="count-sms"
-                            class="bg-cyan-500/10 text-cyan-400 text-xs px-2 py-0.5 rounded-full">0</span>
-                    </h3>
-                    <ul id="list-sms" class="space-y-2 overflow-y-auto flex-1 pr-1 text-xs"></ul>
+                <i class="fa-solid fa-link text-slate-700 text-2xl"></i>
+            </div>
+            <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Flagged Messages</p>
+                    <h3 id="stat-sms" class="text-xl font-black text-emerald-400 mt-0.5">0</h3>
                 </div>
+                <i class="fa-solid fa-comment-sms text-slate-700 text-2xl"></i>
+            </div>
+            <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Reported Callers</p>
+                    <h3 id="stat-calls" class="text-xl font-black text-emerald-400 mt-0.5">0</h3>
+                </div>
+                <i class="fa-solid fa-phone text-slate-700 text-2xl"></i>
             </div>
         </div>
 
-        <!-- ⭐ 4. MANAGE USER REVIEWS AND FEEDBACK (FULL WIDTH MODERATION PANEL) -->
-        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6">
-            <div class="flex justify-between items-center mb-4">
+        <div class="bg-[#111827]/60 border border-slate-800 rounded-2xl p-4 md:p-6 shadow-xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4 gap-2">
                 <div>
-                    <h3 class="text-lg font-bold text-amber-400"><i class="fa-solid fa-star mr-2"></i>Public Feedback
-                        Moderation</h3>
-                    <p class="text-slate-400 text-xs mt-0.5">Yahan se aap user ke jhootay (fake) ratings aur comments ko
-                        live filter karke delete kar sakte hain.</p>
+                    <h3 class="text-sm md:text-base font-bold text-amber-400 tracking-wide flex items-center gap-1.5">
+                        <i class="fa-solid fa-star"></i> Public Feedback Moderation
+                    </h3>
+                    <p class="text-slate-400 text-[11px] md:text-xs mt-0.5">
+                        Yahan se aap user ke jhootay (fake) ratings aur comments ko live filter karke delete kar sakte
+                        hain.
+                    </p>
                 </div>
-                <span id="count-reviews"
-                    class="bg-amber-500/10 text-amber-400 text-xs font-bold px-3 py-1 rounded-full">0 Reviews</span>
+                <div
+                    class="bg-slate-800/90 border border-slate-700 text-amber-400 px-3 py-1.5 rounded-xl text-center shrink-0 min-w-[70px]">
+                    <div id="review-count-badge" class="text-sm font-black leading-none">0</div>
+                    <div class="text-[9px] uppercase font-bold tracking-wider text-slate-400 mt-0.5">Reviews</div>
+                </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
+            <div class="w-full overflow-x-auto rounded-xl border border-slate-800 bg-[#0b0f19]/40">
+                <table class="w-full text-left border-collapse min-w-[500px]">
                     <thead>
-                        <tr class="border-b border-slate-700 text-slate-400 uppercase text-xs tracking-wider">
-                            <th class="py-3 px-4 font-semibold">User Name</th>
-                            <th class="py-3 px-4 font-semibold">Stars</th>
-                            <th class="py-3 px-4 font-semibold">Feedback Comment</th>
-                            <th class="py-3 px-4 font-semibold text-center">Action</th>
+                        <tr
+                            class="border-b border-slate-800 bg-slate-900/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                            <th class="py-3 px-4">User Name</th>
+                            <th class="py-3 px-4">Stars</th>
+                            <th class="py-3 px-4 w-1/2">Feedback Comment</th>
+                            <th class="py-3 px-4 text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="adminReviewsTable" class="divide-y divide-slate-800/60">
-                        <!-- Dynamic reviews layout -->
+                    <tbody id="adminReviewsBody" class="text-xs text-slate-300 divide-y divide-slate-800/60">
                     </tbody>
                 </table>
-            </div>
-
-            <div id="noReviewsMessage" class="hidden text-center py-8 text-slate-500 text-sm">
-                <i class="fa-solid fa-comment-slash text-2xl mb-2 block"></i> Website par koi feedback reviews mojood
-                nahi hain.
             </div>
         </div>
     </main>
 
-    <script>
-        // Obfuscated client check helper method
-        function attemptLogin() {
-            const email = document.getElementById('admin-email').value.trim();
-            const pass = document.getElementById('admin-pass').value.trim();
+    <footer class="border-t border-slate-800 bg-slate-950/50 py-4 text-center text-xs text-slate-500 w-full">
+        <p>&copy; 2026 ScamShield PK - Secure Admin Core Layer.</p>
+    </footer>
 
-            if (btoa(email) === "YWRtaW5Ac2NhbXNoaWVsZC5waw==" && btoa(pass) === "YWRtaW4xMjM=") {
-                document.getElementById('login-overlay').classList.add('hidden');
-                sessionStorage.setItem('isAdminLoggedIn', 'true');
-                loadAllReportedData();
-            } else {
-                alert("❌ Invalid Email or Password! Please try again.");
-            }
-        }
-
-        if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
-            document.getElementById('login-overlay').classList.add('hidden');
-        }
-
-        function logout() {
-            sessionStorage.removeItem('isAdminLoggedIn');
-            window.location.reload();
-        }
-
-        function loadAllReportedData() {
-            renderDataList('scamNumbers', 'list-numbers', 'count-num');
-            renderDataList('scamLinks', 'list-links', 'count-links');
-            renderDataList('scamSMS', 'list-sms', 'count-sms');
-            loadAdminReviews(); // Load reviews under same authentication pipeline
-        }
-
-        function renderDataList(storageKey, listId, countId) {
-            let data = JSON.parse(localStorage.getItem(storageKey)) || [];
-            if (storageKey === 'scamNumbers' && data.length === 0) data = ["03001234567", "03129876543"];
-
-            const container = document.getElementById(listId);
-            document.getElementById(countId).innerText = data.length;
-            container.innerHTML = '';
-
-            data.forEach((item, index) => {
-                container.innerHTML += `
-                    <li class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
-                        <span class="text-slate-300 font-mono">${item}</span>
-                        <button onclick="deleteItem('${storageKey}', ${index})" class="text-slate-600 hover:text-red-400 transition cursor-pointer ml-2"><i class="fa-solid fa-trash-can"></i></button>
-                    </li>`;
-            });
-        }
-
-        function deleteItem(storageKey, index) {
-            let data = JSON.parse(localStorage.getItem(storageKey)) || [];
-            data.splice(index, 1);
-            localStorage.setItem(storageKey, JSON.stringify(data));
-            loadAllReportedData();
-        }
-
-        // ⭐ NEW: Load and Render Reviews Function for Admin Panel Mod
-        function loadAdminReviews() {
-            const tableBody = document.getElementById("adminReviewsTable");
-            const emptyAlert = document.getElementById("noReviewsMessage");
-
-            // Sync with default local mock reviews if empty
-            const reviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
-                { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
-                { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
-            ];
-
-            document.getElementById("count-reviews").innerText = `${reviews.length} Reviews`;
-            tableBody.innerHTML = '';
-
-            if (reviews.length === 0) {
-                emptyAlert.classList.remove('hidden');
-                return;
-            } else {
-                emptyAlert.classList.add('hidden');
-            }
-
-            reviews.forEach((rev, index) => {
-                // Generate Dynamic font-awesome golden stars
-                let starsHTML = "";
-                for (let i = 1; i <= 5; i++) {
-                    if (i <= rev.rating) {
-                        starsHTML += `<i class="fa-solid fa-star text-amber-400 mr-0.5"></i>`;
-                    } else {
-                        starsHTML += `<i class="fa-regular fa-star text-slate-600 mr-0.5"></i>`;
-                    }
-                }
-
-                tableBody.innerHTML += `
-                    <tr class="hover:bg-slate-800/30 transition">
-                        <td class="py-3 px-4 font-bold text-slate-200">${rev.name}</td>
-                        <td class="py-3 px-4 text-xs">${starsHTML}</td>
-                        <td class="py-3 px-4 text-slate-400 text-xs">${rev.text}</td>
-                        <td class="py-3 px-4 text-center">
-                            <button onclick="deleteReview(${index})" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white border border-red-500/20 text-xs px-3 py-1 rounded-xl transition cursor-pointer">
-                                <i class="fa-solid fa-trash mr-1"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        // ⭐ NEW: Delete Specific Review Entry
-        function deleteReview(index) {
-            if (confirm("🚨 Are you sure you want to permanently delete this user feedback?")) {
-                const reviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
-                    { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
-                    { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
-                ];
-
-                reviews.splice(index, 1);
-                localStorage.setItem("scamShieldReviews", JSON.stringify(reviews));
-                loadAdminReviews(); // Refresh component
-            }
-        }
-
-        if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
-            loadAllReportedData();
-        }
-    </script>
+    <script src="admin.js"></script>
 </body>
 
 </html>

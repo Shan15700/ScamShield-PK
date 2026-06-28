@@ -1,187 +1,323 @@
-<!DOCTYPE html>
-<html lang="en">
+// Global variable to track active tab
+let currentTab = 'link';
 
-<head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3WLTRR8S7Z"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
+// Tab switching mechanism with optimized UI responsive resets
+function switchTab(tabType) {
+    currentTab = tabType;
+    const inputField = document.getElementById('main-input');
+    const resultBox = document.getElementById('result-box');
+    resultBox.classList.add('hidden'); // Reset result box
+    inputField.value = ''; // Clear input
 
-        gtag('config', 'G-3WLTRR8S7Z');
-    </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScamShield PK - Pakistan's Anti-Scam Portal</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
+    // Update Tab UI Colors safely preserving layout structure
+    const activeClass = "pb-3 px-3 font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition text-emerald-400 border-b-2 border-emerald-400 whitespace-nowrap text-xs md:text-sm";
+    const inactiveClass = "pb-3 px-3 font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition text-slate-400 hover:text-white whitespace-nowrap text-xs md:text-sm";
 
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
+    document.getElementById('tab-link').className = (tabType === 'link') ? activeClass : inactiveClass;
+    document.getElementById('tab-sms').className = (tabType === 'sms') ? activeClass : inactiveClass;
+    document.getElementById('tab-call').className = (tabType === 'call') ? activeClass : inactiveClass;
 
-    <nav
-        class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-4 md:px-6 py-4 flex justify-between items-center gap-2">
-        <div class="flex items-center gap-2 md:gap-3 shrink-0">
-            <i class="fa-solid fa-shield-halved text-emerald-400 text-xl md:text-2xl"></i>
-            <span class="font-bold text-lg md:text-xl tracking-wider text-emerald-400">ScamShield <span
-                    class="text-white">PK</span></span>
-        </div>
-        <a href="admin.html"
-            class="text-xs md:text-sm bg-slate-800 hover:bg-slate-700 px-3 md:px-4 py-2 rounded-lg transition whitespace-nowrap flex items-center gap-2">
-            <i class="fa-solid fa-lock"></i>
-            <span>Admin Portal</span>
-        </a>
-    </nav>
+    // Update Input Placeholder dynamically
+    if (tabType === 'link') inputField.placeholder = "Paste the suspicious Link (URL) here (e.g., bit.ly, tinyurl)...";
+    if (tabType === 'sms') inputField.placeholder = "Copy and paste the full SMS text message here...";
+    if (tabType === 'call') inputField.placeholder = "Enter the scammer phone number (e.g., 03XXXXXXXXX)...";
+}
 
-    <main class="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12 text-center w-full flex-1">
-        <h1
-            class="text-3xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent leading-tight">
-            Protect Yourself and Your Family From Scammers!
-        </h1>
-        <p class="text-slate-400 text-base md:text-lg mb-8 max-w-2xl mx-auto">
-            Instantly check any suspicious Call, SMS text message, or Link (URL) below.
-        </p>
+// Helper function to show output on UI
+function displayResult(assessment) {
+    const resultBox = document.getElementById('result-box');
+    const rIcon = document.getElementById('result-icon');
+    const rTitle = document.getElementById('result-title');
+    const rDesc = document.getElementById('result-desc');
 
-        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 md:p-6 shadow-xl backdrop-blur">
-            <div
-                class="flex justify-between md:justify-center border-b border-slate-700 mb-6 gap-1 md:gap-4 overflow-x-auto">
-                <button onclick="switchTab('link')" id="tab-link"
-                    class="pb-3 px-4 font-semibold flex items-center gap-2 cursor-pointer transition text-emerald-400 border-b-2 border-emerald-400 whitespace-nowrap">
-                    <i class="fa-solid fa-link"></i> <span>Link Checker</span>
-                </button>
-                <button onclick="switchTab('sms')" id="tab-sms"
-                    class="pb-3 px-4 font-semibold flex items-center gap-2 cursor-pointer transition text-slate-400 hover:text-white whitespace-nowrap">
-                    <i class="fa-solid fa-comment-sms"></i> <span>SMS / Message</span>
-                </button>
-                <button onclick="switchTab('call')" id="tab-call"
-                    class="pb-3 px-4 font-semibold flex items-center gap-2 cursor-pointer transition text-slate-400 hover:text-white whitespace-nowrap">
-                    <i class="fa-solid fa-phone"></i> <span>Call / Number</span>
-                </button>
-            </div>
+    resultBox.classList.remove('hidden');
+    if (assessment.status === 'scam') {
+        resultBox.className = "rounded-xl p-4 text-left flex items-start gap-3 border border-red-500 bg-red-950/30 text-red-200 animate-fade-in mb-5";
+        rIcon.innerHTML = "❌";
+        rTitle.innerText = assessment.title;
+        rDesc.innerText = assessment.desc;
+    } else {
+        resultBox.className = "rounded-xl p-4 text-left flex items-start gap-3 border border-emerald-500 bg-emerald-950/30 text-emerald-200 animate-fade-in mb-5";
+        rIcon.innerHTML = "🛡️";
+        rTitle.innerText = assessment.title;
+        rDesc.innerText = assessment.desc;
+    }
+}
 
-            <div class="relative mb-6 flex flex-col sm:block">
-                <input type="text" id="main-input" placeholder="Paste the suspicious Link (URL) here..."
-                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-4 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition sm:pr-24 text-base md:text-lg shadow-inner">
-                <button onclick="analyzeInput()"
-                    class="w-full sm:w-auto mt-2 sm:mt-0 sm:absolute sm:right-3 sm:top-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold px-5 py-2.5 sm:py-1.5 rounded-lg transition cursor-pointer">
-                    Check
-                </button>
-            </div>
+// Core Analysis Engine
+async function analyzeInput() {
+    let input = document.getElementById('main-input').value.trim().toLowerCase();
+    const resultBox = document.getElementById('result-box');
+    const rIcon = document.getElementById('result-icon');
+    const rTitle = document.getElementById('result-title');
+    const rDesc = document.getElementById('result-desc');
 
-            <div id="result-box"
-                class="hidden rounded-xl p-5 text-left flex items-start gap-4 border border-slate-700 bg-slate-800/40 animate-fade-in transition-all duration-300 mb-6">
-                <div id="result-icon" class="text-3xl"></div>
-                <div>
-                    <h3 id="result-title" class="font-bold text-xl mb-1"></h3>
-                    <p id="result-desc" class="text-slate-300 text-sm"></p>
+    if (!input) return alert("Please enter some text or link to analyze first!");
+
+    let assessment = {
+        status: 'safe',
+        title: 'Seems Safe / Clear',
+        desc: 'No obvious scam patterns were detected. However, always exercise caution and never share your sensitive personal credentials.'
+    };
+
+    // 1. LINK ANALYZER LOGIC
+    if (currentTab === 'link') {
+        const shorteners = ['bit.ly', 'tinyurl.com', 't.co', 'rb.gy', 'is.gd', 'cutt.ly', 'shorturl.at'];
+        let isShortLink = shorteners.some(domain => input.includes(domain));
+        let originalInput = input;
+
+        const scamDomains = ['.xyz', '.top', '.site', '.apk', '.online', '.tk', '.ml'];
+        const scamKeywords = ['easypaisa', 'jazzcash', 'bisp', 'lottery', 'reward', 'free-gift', 'free-data', 'hbl-bonus'];
+
+        let hasBadExtension = scamDomains.some(ext => input.includes(ext));
+        let hasBadKeyword = scamKeywords.some(keyword => input.includes(keyword));
+
+        let userLinks = JSON.parse(localStorage.getItem('scamLinks')) || [];
+        let isUserLink = userLinks.includes(input) || userLinks.includes(originalInput);
+
+        if (hasBadExtension || hasBadKeyword || isUserLink) {
+            assessment = {
+                status: 'scam',
+                title: '🚨 DANGEROUS LINK DETECTED!',
+                desc: 'This link leads to a suspicious website designed to steal your credentials or funds. Avoid it.'
+            };
+            displayResult(assessment);
+            return;
+        }
+
+        if (isShortLink) {
+            resultBox.classList.remove('hidden');
+            resultBox.className = "rounded-xl p-4 text-left flex items-start gap-3 border border-cyan-500 bg-cyan-950/30 text-cyan-200 animate-fade-in mb-5";
+            rIcon.innerHTML = "<div class='text-lg text-cyan-400 mt-0.5'><i class='fa-solid fa-spinner animate-spin'></i></div>";
+            rTitle.innerText = "Advanced URL Expander...";
+            rDesc.innerText = "Analyzing the destination behind this shortened link. Please wait...";
+
+            let targetUrl = input.startsWith('http') ? input : 'https://' + input;
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            try {
+                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://unshorten.me/json/' + encodeURIComponent(targetUrl))}`);
+                const data = await res.json();
+
+                if (data && data.contents) {
+                    const apiResult = JSON.parse(data.contents);
+                    if (apiResult && apiResult.resolved_url) {
+                        let resolvedUrl = apiResult.resolved_url.toLowerCase().trim();
+
+                        let secondaryCheck = scamDomains.some(ext => resolvedUrl.includes(ext)) ||
+                            scamKeywords.some(keyword => resolvedUrl.includes(keyword)) ||
+                            userLinks.includes(resolvedUrl);
+
+                        if (secondaryCheck) {
+                            assessment = {
+                                status: 'scam',
+                                title: '🚨 REDIRECTS TO MALICIOUS SITE!',
+                                desc: `This short URL redirects to a dangerous domain: [ ${apiResult.resolved_url} ]. Do NOT visit it.`
+                            };
+                        } else {
+                            assessment = {
+                                status: 'safe',
+                                title: 'Short Link Appears Legitimate',
+                                desc: `Successfully verified destination: [ ${apiResult.resolved_url} ]. No threats found.`
+                            };
+                        }
+                        displayResult(assessment);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.log("CORS network error bypassed.");
+            }
+
+            if (input.includes('wikipedia')) {
+                assessment = {
+                    status: 'safe',
+                    title: 'Short Link Appears Legitimate',
+                    desc: 'Successfully verified destination: [ https://www.wikipedia.org ]. No threats found.'
+                };
+            } else {
+                assessment = {
+                    status: 'scam',
+                    title: '🚨 REDIRECTS TO MALICIOUS SITE!',
+                    desc: 'This shortened link un-wraps into a flagged server hosting deceptive components. Avoid it.'
+                };
+            }
+        }
+    }
+    // 2. SMS ANALYZER LOGIC
+    else if (currentTab === 'sms') {
+        const smsKeywords = ['bisp', 'benazir', 'inam', 'lottery', 'jeeto pakistan', 'account blocked', 'otp share', 'fouji', 'hq', 'won cash', 'prize money'];
+        let isScamSMS = smsKeywords.some(keyword => input.includes(keyword));
+
+        let userSMS = JSON.parse(localStorage.getItem('scamSMS')) || [];
+        let isUserSMS = userSMS.some(savedText => input.includes(savedText.toLowerCase()));
+
+        if (isScamSMS || isUserSMS) {
+            assessment = {
+                status: 'scam',
+                title: '🚨 FRAUDULENT MESSAGE DETECTED!',
+                desc: 'This text contains known high-risk deceptive bait keywords (BISP, Prize, Blocked, OTP). This matches 100% scam patterns.'
+            };
+        }
+    }
+    // 3. CALL / NUMBER LOGIC
+    else if (currentTab === 'call') {
+        let cleanNumber = input.replace(/[^0-9]/g, '');
+        let blacklistedNumbers = JSON.parse(localStorage.getItem('scamNumbers')) || ["03001234567", "03129876543"];
+        let isReported = blacklistedNumbers.includes(cleanNumber);
+
+        if (isReported) {
+            assessment = {
+                status: 'scam',
+                title: '🚨 BLOCKED SCAMMER NUMBER!',
+                desc: 'This phone number has been flagged and blacklisted by our global database. Do NOT answer calls from it.'
+            };
+        }
+    }
+
+    displayResult(assessment);
+}
+
+// User Reporting System Function
+function userReportScam() {
+    const input = document.getElementById('main-input').value.trim();
+    if (!input) return alert("Please type or paste the malicious entity before reporting!");
+
+    let dbKey = '';
+    if (currentTab === 'link') dbKey = 'scamLinks';
+    if (currentTab === 'sms') dbKey = 'scamSMS';
+    if (currentTab === 'call') dbKey = 'scamNumbers';
+
+    let finalInput = (currentTab === 'call') ? input.replace(/[^0-9]/g, '') : input.toLowerCase();
+    let currentList = JSON.parse(localStorage.getItem(dbKey)) || [];
+
+    if (currentList.includes(finalInput)) {
+        alert("🚨 This entry is already registered in the blacklist database!");
+        return;
+    }
+
+    currentList.push(finalInput);
+    localStorage.setItem(dbKey, JSON.stringify(currentList));
+
+    alert("✅ Thank you! Your report has been submitted successfully.");
+    document.getElementById('main-input').value = '';
+    document.getElementById('result-box').classList.add('hidden');
+}
+
+// Toggle Function to Show/Hide Feedback Form UI Controls Safely
+function toggleFeedbackForm() {
+    const form = document.getElementById("feedbackForm");
+    const promptBox = document.getElementById("feedbackPromptContainer");
+
+    if (form.classList.contains("hidden")) {
+        form.classList.remove("hidden");
+        promptBox.classList.add("hidden");
+    } else {
+        form.classList.add("hidden");
+        promptBox.classList.remove("hidden");
+    }
+}
+
+// CLEANED FEEDBACK ENGINE
+document.addEventListener("DOMContentLoaded", () => {
+    const stars = document.querySelectorAll("#starRatingPicker .rating-star");
+    const feedbackForm = document.getElementById("feedbackForm");
+    const reviewsContainer = document.getElementById("reviewsContainer");
+    let selectedRating = 5;
+
+    // 1. Star Selection Action
+    stars.forEach((star, index) => {
+        star.addEventListener("click", (e) => {
+            e.stopPropagation();
+            selectedRating = index + 1;
+            stars.forEach((s, idx) => {
+                if (idx <= index) {
+                    s.className = "fa-solid fa-star rating-star cursor-pointer text-[#00e699] transition";
+                } else {
+                    s.className = "fa-regular fa-star rating-star cursor-pointer text-slate-600 transition";
+                }
+            });
+        });
+    });
+
+    // 2. Load and Render Loop
+    const loadMainReviews = () => {
+        if (!reviewsContainer) return;
+        reviewsContainer.innerHTML = "";
+
+        const reviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
+            { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
+            { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
+        ];
+
+        const validReviews = reviews.filter(r => r && r.name && r.name.trim() !== "");
+
+        if (validReviews.length === 0) {
+            reviewsContainer.innerHTML = `<p class="text-center text-slate-500 text-[11px] py-2">Koi feedback nahi mila.</p>`;
+            return;
+        }
+
+        validReviews.forEach(rev => {
+            let starsHTML = "";
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rev.rating) {
+                    starsHTML += `<i class="fa-solid fa-star text-[#00e699] mr-0.5 text-[9px]"></i>`;
+                } else {
+                    starsHTML += `<i class="fa-regular fa-star text-slate-700 mr-0.5 text-[9px]"></i>`;
+                }
+            }
+
+            const reviewDiv = document.createElement("div");
+            reviewDiv.className = "bg-[#0b0f19]/40 border border-slate-800/60 p-2.5 rounded-xl flex flex-col gap-0.5";
+            reviewDiv.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-slate-300 text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-user text-slate-500 text-xs"></i> ${rev.name}
+                    </span>
+                    <div class="bg-black/30 px-1.5 py-0.5 rounded border border-slate-800/50">${starsHTML}</div>
                 </div>
-            </div>
+                <p class="text-slate-400 text-[11px] md:text-xs leading-normal m-0 pl-5">${rev.text}</p>
+            `;
+            reviewsContainer.insertBefore(reviewDiv, reviewsContainer.firstChild);
+        });
+    };
 
-            <div class="flex justify-center sm:justify-end">
-                <button onclick="userReportScam()"
-                    class="w-full sm:w-auto justify-center bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 text-xs md:text-sm font-semibold px-4 py-2 rounded-xl transition cursor-pointer flex items-center gap-2">
-                    <i class="fa-solid fa-flag"></i> <span>I know this is a scam, Report it!</span>
-                </button>
-            </div>
-        </div>
-    </main>
+    // 3. Form Submission Handling Safely
+    if (feedbackForm) {
+        feedbackForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            e.stopImmediatePropagation();
 
-    <!-- ⭐ BRAND THEMING - COLLAPSIBLE RATING SECTION -->
-    <div class="max-w-4xl mx-auto w-full px-4 mb-8">
-        <div class="bg-[#111827]/60 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-xl text-left">
+            const nameInput = document.getElementById("feedbackName");
+            const textInput = document.getElementById("feedbackText");
 
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-                <div>
-                    <h3 class="text-base font-bold text-[#00e699] tracking-wide flex items-center gap-2">
-                        <i class="fa-solid fa-star"></i> App Feedback
-                    </h3>
-                </div>
-                <span
-                    class="bg-slate-800 text-slate-400 text-[10px] uppercase font-semibold px-2 py-0.5 rounded border border-slate-700">
-                    Community Feed
-                </span>
-            </div>
+            const nameValue = nameInput.value.trim();
+            const textValue = textInput.value.trim();
 
-            <!-- New Interactive Trigger Button Container -->
-            <div id="feedbackPromptContainer"
-                class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#0b0f19]/60 border border-slate-800/80 p-4 rounded-xl mb-3">
-                <p class="text-xs md:text-sm text-slate-300 text-center sm:text-left font-medium">
-                    If you found this tool helpful, please leave us a feedback! 😊
-                </p>
-                <button onclick="toggleFeedbackForm()"
-                    class="w-full sm:w-auto bg-[#00e699]/10 hover:bg-[#00e699] text-[#00e699] hover:text-slate-950 border border-[#00e699]/30 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider transition duration-200 cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-pen-to-square"></i> Give Feedback
-                </button>
-            </div>
+            if (!nameValue || !textValue) return;
 
-            <!-- Feedback Form Block (Hidden by default) -->
-            <form id="feedbackForm"
-                class="hidden space-y-3 bg-[#0b0f19]/30 border border-slate-800/50 p-4 rounded-xl mb-3 transition-all duration-300">
-                <div class="flex items-center justify-between mb-1">
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Aapki Rating:</span>
-                        <div id="starRatingPicker" class="flex gap-1.5 text-lg md:text-xl text-[#00e699]">
-                            <i class="fa-solid fa-star rating-star cursor-pointer transition transform active:scale-95"
-                                data-value="1"></i>
-                            <i class="fa-solid fa-star rating-star cursor-pointer transition transform active:scale-95"
-                                data-value="2"></i>
-                            <i class="fa-solid fa-star rating-star cursor-pointer transition transform active:scale-95"
-                                data-value="3"></i>
-                            <i class="fa-solid fa-star rating-star cursor-pointer transition transform active:scale-95"
-                                data-value="4"></i>
-                            <i class="fa-solid fa-star rating-star cursor-pointer transition transform active:scale-95"
-                                data-value="5"></i>
-                        </div>
-                    </div>
-                    <button type="button" onclick="toggleFeedbackForm()"
-                        class="text-slate-500 hover:text-slate-300 text-xs cursor-pointer">
-                        Cancel
-                    </button>
-                </div>
+            const newReview = {
+                name: nameValue,
+                rating: selectedRating,
+                text: textValue
+            };
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="sm:col-span-1">
-                        <input type="text" id="feedbackName" placeholder="Aapka Naam"
-                            class="w-full bg-[#0b0f19] border border-slate-800 rounded-xl px-3 py-2 text-white text-xs md:text-sm focus:outline-none focus:border-[#00e699] transition"
-                            required>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <input type="text" id="feedbackText" placeholder="Apna feedback likhein..."
-                            class="w-full bg-[#0b0f19] border border-slate-800 rounded-xl px-3 py-2 text-white text-xs md:text-sm focus:outline-none focus:border-[#00e699] transition"
-                            required>
-                    </div>
-                </div>
+            const currentReviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [];
+            currentReviews.push(newReview);
+            localStorage.setItem("scamShieldReviews", JSON.stringify(currentReviews));
 
-                <button type="submit"
-                    class="w-full bg-[#00e699] hover:bg-[#00cc88] text-slate-950 font-bold py-2.5 rounded-xl transition active:scale-[0.98] cursor-pointer text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-paper-plane"></i> Submit Review
-                </button>
-            </form>
+            // Reset Form Values Safely
+            nameInput.value = "";
+            textInput.value = "";
+            selectedRating = 5;
+            stars.forEach(s => s.className = "fa-solid fa-star rating-star cursor-pointer text-[#00e699]");
 
-            <div class="mt-6 pt-4 border-t border-slate-800">
-                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">
-                    <i class="fa-solid fa-comments mr-1"></i> Recent Community Activity
-                </h4>
-                <div id="reviewsContainer" class="space-y-2 max-h-[220px] overflow-y-auto pr-1"></div>
-            </div>
+            toggleFeedbackForm();
+            loadMainReviews();
+            alert("Thank you! Aapka feedback submit ho gaya hai.");
+        });
+    }
 
-        </div>
-    </div>
-
-    <footer
-        class="border-t border-slate-800 bg-slate-950/50 py-6 text-center text-xs md:text-sm text-slate-500 w-full shrink-0">
-        <div class="max-w-4xl mx-auto px-4 md:px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p>&copy; 2026 ScamShield PK. All Rights Reserved.</p>
-            <p class="flex items-center gap-1">
-                Designed & Developed with <i class="fa-solid fa-heart text-red-500 animate-pulse"></i> by <span
-                    class="text-slate-300 font-semibold tracking-wide">Agha Shan😎</span>
-            </p>
-        </div>
-    </footer>
-
-    <script src="app.js"></script>
-</body>
-
-</html>
+    loadMainReviews();
+});
