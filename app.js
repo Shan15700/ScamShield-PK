@@ -9,12 +9,12 @@ function switchTab(tabType) {
     resultBox.classList.add('hidden'); // Reset result box
     inputField.value = ''; // Clear input
 
-    // Update Tab UI Colors (English styling matches)
+    // Update Tab UI Colors
     document.getElementById('tab-link').className = `pb-3 px-4 font-semibold flex items-center gap-2 cursor-pointer transition ${tabType === 'link' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-slate-400 hover:text-white'}`;
     document.getElementById('tab-sms').className = `pb-3 px-4 font-semibold flex items-center gap-2 cursor-pointer transition ${tabType === 'sms' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-slate-400 hover:text-white'}`;
     document.getElementById('tab-call').className = `pb-3 px-4 font-semibold flex items-center gap-2 cursor-pointer transition ${tabType === 'call' ? 'text-emerald-400 border-b-2 border-emerald-400' : 'text-slate-400 hover:text-white'}`;
 
-    // Update Input Placeholder to English
+    // Update Input Placeholder
     if (tabType === 'link') inputField.placeholder = "Paste the suspicious Link (URL) here (e.g., bit.ly, tinyurl, or direct domains)...";
     if (tabType === 'sms') inputField.placeholder = "Copy and paste the full SMS text message here...";
     if (tabType === 'call') inputField.placeholder = "Enter the scammer phone number (e.g., 03XXXXXXXXX)...";
@@ -83,7 +83,6 @@ async function analyzeInput() {
         }
 
         if (isShortLink) {
-            // 🌟 FIXED ANIMATED ROTATING LOADER (Uses FontAwesome Spin)
             resultBox.classList.remove('hidden');
             resultBox.className = "rounded-xl p-5 text-left flex items-start gap-4 border border-cyan-500 bg-cyan-950/30 text-cyan-200 animate-fade-in mb-6";
             rIcon.innerHTML = "<div class='text-xl text-cyan-400 mt-0.5'><i class='fa-solid fa-spinner animate-spin'></i></div>";
@@ -92,8 +91,7 @@ async function analyzeInput() {
 
             let targetUrl = input.startsWith('http') ? input : 'https://' + input;
 
-            // Artificial 1.5 Second delay to let the user enjoy the spinning loader asset
-            await new Array(resolve => setTimeout(resolve, 1500));
+            await new Promise(resolve => setTimeout(resolve, 1500));
 
             try {
                 const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://unshorten.me/json/' + encodeURIComponent(targetUrl))}`);
@@ -126,11 +124,9 @@ async function analyzeInput() {
                     }
                 }
             } catch (e) {
-                console.log("CORS/Network error bypassed via intelligent sandbox verification.");
+                console.log("CORS/Network error bypassed.");
             }
 
-            // 🌟 FIXED LOCALHOST FALLBACK INTERCEPTOR
-            // If API fails on local computer files, it simulates a successful expansion for testing purposes!
             if (input.includes('wikipedia')) {
                 assessment = {
                     status: 'safe',
@@ -201,97 +197,36 @@ function userReportScam() {
     currentList.push(finalInput);
     localStorage.setItem(dbKey, JSON.stringify(currentList));
 
-    alert("✅ Thank you! Your report has been submitted successfully and added to the real-time blocklist.");
+    alert("✅ Thank you! Your report has been submitted successfully.");
     document.getElementById('main-input').value = '';
     document.getElementById('result-box').classList.add('hidden');
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const stars = document.querySelectorAll("#starRatingPicker .rating-star");
-    const feedbackForm = document.getElementById("feedbackForm");
-    const reviewsContainer = document.getElementById("reviewsContainer");
-    let selectedRating = 5; // Default rating
+// Toggle Function to Show/Hide Feedback Form
+function toggleFeedbackForm() {
+    const form = document.getElementById("feedbackForm");
+    const promptBox = document.getElementById("feedbackPromptContainer");
 
-    // 1. Star Selection Logic
-    stars.forEach((star, index) => {
-        star.addEventListener("click", () => {
-            selectedRating = index + 1;
-            stars.forEach((s, idx) => {
-                if (idx <= index) {
-                    s.classList.remove("text-secondary");
-                    s.classList.add("text-warning"); // Golden star
-                } else {
-                    s.classList.remove("text-warning");
-                    s.classList.add("text-secondary"); // Gray star
-                }
-            });
-        });
-    });
+    if (form.classList.contains("hidden")) {
+        form.classList.remove("hidden");
+        promptBox.classList.add("hidden");
+    } else {
+        form.classList.add("hidden");
+        promptBox.classList.remove("hidden");
+    }
+}
 
-    // 2. Load Reviews from LocalStorage
-    const loadReviews = () => {
-        reviewsContainer.innerHTML = "";
-        const reviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
-            { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
-            { name: "Sana Khan", rating: 4, text: "Bohot useful hai, maine apne abu ke phone mein save karwa diya hai." }
-        ];
-
-        reviews.forEach(rev => {
-            const starHTML = `<span class="text-warning">${"★".repeat(rev.rating)}${"☆".repeat(5 - rev.rating)}</span>`;
-            const reviewDiv = document.createElement("div");
-            reviewDiv.className = "bg-secondary p-2 rounded-3 small border border-dark mb-1";
-            reviewDiv.innerHTML = `
-                <div class="d-flex justify-content-between fw-bold text-warning">
-                    <span>${rev.name}</span> ${starHTML}
-                </div>
-                <p class="text-light m-0 mt-1" style="font-size: 13px;">${rev.text}</p>
-            `;
-            reviewsContainer.insertBefore(reviewDiv, reviewsContainer.firstChild);
-        });
-    };
-
-    // 3. Form Submit Handle
-    feedbackForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const nameInput = document.getElementById("feedbackName");
-        const textInput = document.getElementById("feedbackText");
-
-        const newReview = {
-            name: nameInput.value,
-            rating: selectedRating,
-            text: textInput.value
-        };
-
-        const currentReviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [
-            { name: "Ali Ahmed", rating: 5, text: "Zabardast tool! Mujhe aik fake Easypaisa cash reward wale link se bacha liya." },
-            { name: "Sana Khan", rating: 4, text: "Bohot useful hai, maine apne abu ke phone mein save karwa diya hai." }
-        ];
-
-        currentReviews.push(newReview);
-        localStorage.setItem("scamShieldReviews", JSON.stringify(currentReviews));
-
-        // Reset Form
-        nameInput.value = "";
-        textInput.value = "";
-
-        // Reload list
-        loadReviews();
-        alert("Thank you! Aapka feedback submit ho gaya hai.");
-    });
-
-    // Initialize Reviews on Load
-    loadReviews();
-});
-
+// CLEANED FEEDBACK ENGINE
 document.addEventListener("DOMContentLoaded", () => {
     const stars = document.querySelectorAll("#starRatingPicker .rating-star");
     const feedbackForm = document.getElementById("feedbackForm");
     const reviewsContainer = document.getElementById("reviewsContainer");
     let selectedRating = 5;
 
-    // 1. Theme Synced Star Selector Toggle
+    // 1. Star Selection Action
     stars.forEach((star, index) => {
-        star.addEventListener("click", () => {
+        star.addEventListener("click", (e) => {
+            e.stopPropagation();
             selectedRating = index + 1;
             stars.forEach((s, idx) => {
                 if (idx <= index) {
@@ -303,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 2. Load and Render Loop with Smaller Stars for Mobile Layout
+    // 2. Load and Render Loop
     const loadMainReviews = () => {
         if (!reviewsContainer) return;
         reviewsContainer.innerHTML = "";
@@ -313,12 +248,14 @@ document.addEventListener("DOMContentLoaded", () => {
             { name: "Sana Khan", rating: 5, text: "Bohot useful aur fast hai. Maine apne ghar ke tamam devices par bookmark karwa diya hai." }
         ];
 
-        if (reviews.length === 0) {
+        const validReviews = reviews.filter(r => r && r.name && r.name.trim() !== "");
+
+        if (validReviews.length === 0) {
             reviewsContainer.innerHTML = `<p class="text-center text-slate-500 text-[11px] py-2">Koi feedback nahi mila.</p>`;
             return;
         }
 
-        reviews.forEach(rev => {
+        validReviews.forEach(rev => {
             let starsHTML = "";
             for (let i = 1; i <= 5; i++) {
                 if (i <= rev.rating) {
@@ -329,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const reviewDiv = document.createElement("div");
-            reviewDiv.className = "bg-[#0b0f19]/40 border border-slate-800/60 p-2.5 rounded-xl flex flex-col gap-0.5 animate__animated animate__fadeIn";
+            reviewDiv.className = "bg-[#0b0f19]/40 border border-slate-800/60 p-2.5 rounded-xl flex flex-col gap-0.5";
             reviewDiv.innerHTML = `
                 <div class="flex justify-between items-center">
                     <span class="font-bold text-slate-300 text-xs flex items-center gap-1.5">
@@ -343,28 +280,41 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
+    // 3. Form Submission
     if (feedbackForm) {
         feedbackForm.addEventListener("submit", (e) => {
             e.preventDefault();
+            e.stopImmediatePropagation();
+
             const nameInput = document.getElementById("feedbackName");
             const textInput = document.getElementById("feedbackText");
 
+            const nameValue = nameInput.value.trim();
+            const textValue = textInput.value.trim();
+
+            if (!nameValue || !textValue) return;
+
             const newReview = {
-                name: nameInput.value.trim(),
+                name: nameValue,
                 rating: selectedRating,
-                text: textInput.value.trim()
+                text: textValue
             };
 
             const currentReviews = JSON.parse(localStorage.getItem("scamShieldReviews")) || [];
             currentReviews.push(newReview);
             localStorage.setItem("scamShieldReviews", JSON.stringify(currentReviews));
 
+            // Reset Form Values Safely
             nameInput.value = "";
             textInput.value = "";
             selectedRating = 5;
             stars.forEach(s => s.className = "fa-solid fa-star rating-star cursor-pointer text-[#00e699]");
 
+            // Hide the form again and show the helpful card back
+            toggleFeedbackForm();
+
             loadMainReviews();
+            alert("Thank you! Aapka feedback submit ho gaya hai.");
         });
     }
 
